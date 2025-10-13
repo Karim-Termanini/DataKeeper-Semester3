@@ -52,7 +52,6 @@ public class LevelBackgroundRenderer {
     public void render(Graphics g, int width, int height, int cameraX, int cameraY) {
         BufferedImage bg = null;
         
-        // Select background based on level
         if (currentLevel == 1) {
             bg = level1Background;
         } else if (currentLevel == 2) {
@@ -62,7 +61,6 @@ public class LevelBackgroundRenderer {
         }
 
         if (bg == null) {
-            // Fallback to solid color
             g.setColor(new Color(20, 20, 40));
             g.fillRect(0, 0, width, height);
             return;
@@ -72,11 +70,36 @@ public class LevelBackgroundRenderer {
         int bgX = -(cameraX / 3);
         int bgY = -(cameraY / 3);
 
-        // رسم الخلفية مرة واحدة فقط مع تأثير Parallax
         g.drawImage(bg, bgX, bgY, width, height, null);
     }
-
-//    public boolean isLoaded() {
-//        return loaded;
-//    }
+    public boolean isLoaded() {
+        return loaded;
+    }
+    public void setLoaded(boolean loaded) {
+        this.loaded = loaded;
+    }
+    public BufferedImage getLevel1Background() {
+        return level1Background;
+    }
+    public BufferedImage getLevel2Background() {
+        return level2Background;
+    }
+    public BufferedImage getLevel3Background() {
+        return level3Background;
+    }
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+    public void setCurrentLevel(int currentLevel) {
+        this.currentLevel = currentLevel;
+    }
+    public void setLevel1Background(BufferedImage level1Background) {
+        this.level1Background = level1Background;
+    }
+    public void setLevel2Background(BufferedImage level2Background) {
+        this.level2Background = level2Background;
+    }
+    public void setLevel3Background(BufferedImage level3Background) {
+        this.level3Background = level3Background;
+    }
 }

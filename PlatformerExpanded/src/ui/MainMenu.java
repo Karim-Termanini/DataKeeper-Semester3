@@ -7,7 +7,6 @@ public class MainMenu {
     private final int OPTION_START = 0;
     private final int OPTION_EXIT = 1;
     private final int TOTAL_OPTIONS = 2;
-    
     private int highestLevel;
     private int animationTick;
     private float glowIntensity;
@@ -18,52 +17,36 @@ public class MainMenu {
         this.animationTick = 0;
         this.glowIntensity = 0.5f;
     }
-
     public void update() {
         animationTick++;
         glowIntensity = 0.5f + 0.3f * (float)Math.sin(animationTick * 0.05);
     }
-
     public void render(Graphics g, int screenWidth, int screenHeight) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        // Background
         g.setColor(new Color(20, 20, 40));
         g.fillRect(0, 0, screenWidth, screenHeight);
-
-        // Title
         g.setFont(new Font("Arial", Font.BOLD, 72));
         g.setColor(new Color(100, 200, 255));
         String title = "ARENA FIGHTER";
         FontMetrics fm = g.getFontMetrics();
         int titleX = (screenWidth - fm.stringWidth(title)) / 2;
         g.drawString(title, titleX, 200);
-
-        // Subtitle
         g.setFont(new Font("Arial", Font.PLAIN, 24));
         g.setColor(new Color(150, 150, 200));
         String subtitle = "Survival Mode";
         fm = g.getFontMetrics();
         int subtitleX = (screenWidth - fm.stringWidth(subtitle)) / 2;
         g.drawString(subtitle, subtitleX, 250);
-
-        // Highest Level
         g.setFont(new Font("Arial", Font.BOLD, 32));
         g.setColor(new Color(255, 215, 0));
         String highScore = "Highest Level: " + highestLevel;
         fm = g.getFontMetrics();
         int scoreX = (screenWidth - fm.stringWidth(highScore)) / 2;
         g.drawString(highScore, scoreX, 350);
-
-        // Menu options
         int menuY = 500;
         int spacing = 80;
-
-        // Start Game
         drawOption(g, "START GAME", screenWidth / 2, menuY, selectedOption == OPTION_START);
-
-        // Exit
         drawOption(g, "EXIT", screenWidth / 2, menuY + spacing, selectedOption == OPTION_EXIT);
 
         // Controls hint
@@ -82,16 +65,12 @@ public class MainMenu {
         int textX = centerX - textWidth / 2;
 
         if (selected) {
-            // Glow effect
             int glowAlpha = (int)(100 * glowIntensity);
             g2d.setColor(new Color(100, 200, 255, glowAlpha));
             g2d.fillRoundRect(textX - 30, y - 40, textWidth + 60, 60, 20, 20);
-
-            // Selected text
             g.setFont(new Font("Arial", Font.BOLD, 36));
             g.setColor(new Color(255, 255, 255));
             
-            // Arrow indicators
             g.drawString(">", textX - 50, y);
             g.drawString("<", textX + textWidth + 30, y);
         } else {
@@ -101,7 +80,6 @@ public class MainMenu {
 
         g.drawString(text, textX, y);
     }
-
     public void moveUp() {
         selectedOption--;
         if (selectedOption < 0) {
@@ -115,11 +93,6 @@ public class MainMenu {
             selectedOption = 0;
         }
     }
-
-//    public int getSelectedOption() {
-//        return selectedOption;
-//    }
-
     public boolean isStartSelected() {
         return selectedOption == OPTION_START;
     }
@@ -134,7 +107,6 @@ public class MainMenu {
             saveHighestLevel(level);
         }
     }
-
     private int loadHighestLevel() {
         try {
             java.io.File file = new java.io.File("highscore.dat");
@@ -162,8 +134,4 @@ public class MainMenu {
             System.err.println("Error saving high score: " + e.getMessage());
         }
     }
-
-//    public int getHighestLevel() {
-//        return highestLevel;
-//    }
 }

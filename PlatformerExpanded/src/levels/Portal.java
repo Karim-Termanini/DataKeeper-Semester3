@@ -27,16 +27,9 @@ public class Portal {
         active = true;
     }
 
-//    public void deactivate() {
-//        active = false;
-//    }
-
     public void update() {
         if (!active) return;
-
         animationTick++;
-
-        // Pulsing glow effect
         if (glowIncreasing) {
             glowIntensity += 0.02f;
             if (glowIntensity >= 1.0f) {
@@ -56,29 +49,21 @@ public class Portal {
         if (!active) return;
 
         Graphics2D g2d = (Graphics2D) g;
-
-        // Outer glow layers
         for (int i = 5; i > 0; i--) {
             int alpha = (int)(50 * glowIntensity * (i / 5.0f));
             g2d.setColor(new java.awt.Color(100, 200, 255, alpha));
             int offset = i * 15;
             g2d.fillOval(x - offset, y - offset, width + offset * 2, height + offset * 2);
         }
-
-        // Main portal body
         GradientPaint gradient = new GradientPaint(
             x, y, new java.awt.Color(50, 150, 255, 200),
             x, y + height, new java.awt.Color(150, 200, 255, 150)
         );
         g2d.setPaint(gradient);
         g2d.fillOval(x, y, width, height);
-
-        // Inner bright core
         int coreAlpha = (int)(255 * glowIntensity);
         g2d.setColor(new java.awt.Color(200, 230, 255, coreAlpha));
         g2d.fillOval(x + 20, y + 30, width - 40, height - 60);
-
-        // Swirling particles
         for (int i = 0; i < 8; i++) {
             double angle = (animationTick + i * 45) * 0.05;
             int radius = 40;
@@ -88,8 +73,6 @@ public class Portal {
             g2d.setColor(new java.awt.Color(255, 255, 255, particleAlpha));
             g2d.fillOval(px - 3, py - 3, 6, 6);
         }
-
-        // Text prompt
         g2d.setColor(java.awt.Color.WHITE);
         g2d.setFont(new Font("Arial", Font.BOLD, 16));
         String text = "Press E to Enter";
@@ -97,7 +80,6 @@ public class Portal {
         int textWidth = fm.stringWidth(text);
         g2d.drawString(text, x + (width - textWidth) / 2, y + height + 25);
     }
-
     public boolean checkPlayerCollision(Player player) {
         if (!active) return false;
 
@@ -111,11 +93,6 @@ public class Portal {
 
         return portalBounds.intersects(playerBounds);
     }
-
-//    public boolean isActive() {
-//        return active;
-//    }
-
     public int getX() {
         return x;
     }
@@ -123,9 +100,4 @@ public class Portal {
     public int getY() {
         return y;
     }
-
-//    public void setPosition(int x, int y) {
-//        this.x = x;
-//        this.y = y;
-//    }
 }

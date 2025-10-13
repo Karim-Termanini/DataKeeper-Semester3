@@ -19,8 +19,9 @@ public abstract class GameCharacter implements Character {
     protected boolean isAlive = true;
 
     protected float x, y;
+    // CORRECTED: Added the target variable to the highest-level abstract class
+    protected Player target;
 
-    // 🔥 تطبيق الدوال المطلوبة من الinterface
     @Override
     public abstract void loadAnimations();
 
@@ -54,7 +55,7 @@ public abstract class GameCharacter implements Character {
     public abstract int getAttackDamage();
 
     @Override
-    public abstract void takeDamage(int damage); // 🔥 أضف هذه السطر
+    public abstract void takeDamage(int damage);
 
     @Override
     public abstract int getWidth();
@@ -66,13 +67,10 @@ public abstract class GameCharacter implements Character {
     public abstract int getHealth();
 
     @Override
-    public void update() {
-        // سيتم تطبيقها في الكلاسات الفرعية
-    }
+    public void update() {}
 
     @Override
     public void render(Graphics g) {
-        // سيتم تطبيقها في الكلاسات الفرعية
     }
 
     @Override
@@ -135,8 +133,6 @@ public abstract class GameCharacter implements Character {
         this.x = x;
         this.y = y;
     }
-
-    // 🔥 دوال مساعدة محمية
     protected void handleAnimationCompletion() {
         animationIndex = 0;
     }
@@ -151,12 +147,5 @@ public abstract class GameCharacter implements Character {
     protected BufferedImage flipImageHorizontally(BufferedImage image) {
         return AnimationManager.flipImageHorizontally(image);
     }
-
-//    // 🔥 دالة إضافية لتعيين المواقع بـ float
-//    public void setPosition(float x, float y) {
-//        this.x = x;
-//        this.y = y;
-//    }
-
     public abstract Rectangle getHitbox();
 }

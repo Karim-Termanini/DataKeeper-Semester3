@@ -9,10 +9,6 @@ public class SoundManager {
     private static SoundManager instance;
     private final Map<String, Clip> soundClips;
     private Clip backgroundMusic;
-    private boolean musicEnabled = true;
-    private boolean soundEnabled = true;
-    private float musicVolume = 0.5f;
-    private float soundVolume = 0.7f;
 
     private SoundManager() {
         soundClips = new HashMap<>();
@@ -27,21 +23,14 @@ public class SoundManager {
     }
 
     private void loadSounds() {
-        // Player sounds (converted to WAV)
         loadSound("attack", "/sounds/player/attack.wav");
         loadSound("hurt", "/sounds/player/hurt.wav");
         loadSound("jump", "/sounds/player/jump.wav");
         loadSound("kill", "/sounds/player/kill.wav");
         loadSound("player_death", "/sounds/player/player-death.wav");
-
-        // Enemy sounds
         loadSound("enemy_death", "/sounds/enemy/enemy-death.wav");
         loadSound("hit", "/sounds/enemy/hit.wav");
-
-        // Portal sound
         loadSound("portal", "/sounds/portal.wav");
-
-        // Background music
         loadBackgroundMusic();
     }
 
@@ -77,6 +66,7 @@ public class SoundManager {
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
             backgroundMusic = AudioSystem.getClip();
             backgroundMusic.open(audioStream);
+            float musicVolume = 0.5f;
             setVolume(backgroundMusic, musicVolume);
             System.out.println("✅ Loaded background music");
         } catch (Exception e) {
@@ -85,6 +75,7 @@ public class SoundManager {
     }
 
     public void playSound(String name) {
+        boolean soundEnabled = true;
         if (!soundEnabled) return;
         
         Clip clip = soundClips.get(name);
@@ -93,12 +84,14 @@ public class SoundManager {
                 clip.stop();
             }
             clip.setFramePosition(0);
+            float soundVolume = 0.7f;
             setVolume(clip, soundVolume);
             clip.start();
         }
     }
 
     public void playBackgroundMusic() {
+        boolean musicEnabled = true;
         if (!musicEnabled || backgroundMusic == null) return;
         
         if (!backgroundMusic.isRunning()) {
@@ -113,18 +106,6 @@ public class SoundManager {
         }
     }
 
-//    public void pauseBackgroundMusic() {
-//        if (backgroundMusic != null && backgroundMusic.isRunning()) {
-//            backgroundMusic.stop();
-//        }
-//    }
-
-//    public void resumeBackgroundMusic() {
-//        if (musicEnabled && backgroundMusic != null) {
-//            backgroundMusic.start();
-//        }
-//    }
-
     private void setVolume(Clip clip, float volume) {
         if (clip == null) return;
         
@@ -133,43 +114,7 @@ public class SoundManager {
             float dB = (float) (Math.log(volume) / Math.log(10.0) * 20.0);
             gainControl.setValue(dB);
         } catch (Exception e) {
-            // Volume control not supported
         }
     }
 
-//    public void setMusicEnabled(boolean enabled) {
-//        this.musicEnabled = enabled;
-//        if (!enabled) {
-//            stopBackgroundMusic();
-//        } else {
-//            playBackgroundMusic();
-//        }
-//    }
-
-//    public void setSoundEnabled(boolean enabled) {
-//        this.soundEnabled = enabled;
-//    }
-
-//    public void setMusicVolume(float volume) {
-//        this.musicVolume = Math.max(0.0f, Math.min(1.0f, volume));
-//        if (backgroundMusic != null) {
-//            setVolume(backgroundMusic, musicVolume);
-//        }
-//    }
-
-//    public void setSoundVolume(float volume) {
-//        this.soundVolume = Math.max(0.0f, Math.min(1.0f, volume));
-//    }
-
-//    public void cleanup() {
-//        stopBackgroundMusic();
-//        for (Clip clip : soundClips.values()) {
-//            if (clip != null) {
-//                clip.close();
-//            }
-//        }
-//        if (backgroundMusic != null) {
-//            backgroundMusic.close();
-//        }
-//    }
 }

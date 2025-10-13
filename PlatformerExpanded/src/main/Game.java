@@ -7,7 +7,6 @@ public class Game implements Runnable {
     public Game(){
         gamePanel = new GamePanel();
         GameWindow gameWindow = new GameWindow(gamePanel);
-        // lässt die inputs in focus mode (also nicht nur einmal)
         gamePanel.requestFocus();
         startGameLoop();
     }
@@ -16,10 +15,6 @@ public class Game implements Runnable {
         Thread gameThread = new Thread(this);
         gameThread.start();
     }
-
-    /**
-     *
-     */
     @Override
     public void run() {
         final int FPS_SET = 120;
@@ -28,7 +23,6 @@ public class Game implements Runnable {
         long now;
         int frames = 0;
         long lastCheck = System.currentTimeMillis();
-
         while(true){
             now = System.nanoTime();
             if (now - lastFrame >= timePerFrame){

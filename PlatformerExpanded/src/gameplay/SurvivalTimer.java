@@ -12,13 +12,11 @@ public class SurvivalTimer {
         this.isRunning = false;
         this.isComplete = false;
     }
-
     public void start() {
         isRunning = true;
         currentFrame = 0;
         isComplete = false;
     }
-
     public void update() {
         if (isRunning && !isComplete) {
             currentFrame++;
@@ -28,42 +26,11 @@ public class SurvivalTimer {
             }
         }
     }
-
-//    public void pause() {
-//        isRunning = false;
-//    }
-
-//    public void resume() {
-//        if (!isComplete) {
-//            isRunning = true;
-//        }
-//    }
-
-//    public void reset(int durationSeconds) {
-//        this.totalFrames = durationSeconds * 120;
-//        this.currentFrame = 0;
-//        this.isRunning = false;
-//        this.isComplete = false;
-//    }
-
     public int getRemainingSeconds() {
         int remainingFrames = totalFrames - currentFrame;
         return Math.max(0, remainingFrames / 120);
     }
-
-//    public float getProgress() {
-//        return (float) currentFrame / totalFrames;
-//    }
-
     public boolean isComplete() {
         return isComplete;
     }
-
-//    public boolean isRunning() {
-//        return isRunning;
-//    }
-
-//    public int getTotalSeconds() {
-//        return totalFrames / 120;
-//    }
 }
