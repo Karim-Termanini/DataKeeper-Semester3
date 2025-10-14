@@ -35,6 +35,9 @@ public class Player extends GameCharacter {
     private boolean isAttackingProtected = false;
     private int attackProtectionFrames = 0;
     private final int ATTACK_PROTECTION_DURATION = 15;
+    private boolean isInvincible = false;
+    private int invincibilityFrames = 0;
+    private final int INVINCIBILITY_DURATION = 60; // 1 second of invincibility
 
     // === Combo System ===
     private int comboCount = 0;
@@ -88,7 +91,7 @@ public class Player extends GameCharacter {
     }
 
     private void updatePlayerState() {
-        if (isDashing || isAttacking() || currentAction == Constants.PlayerActions.DEATH) {
+        if (isDashing || isAttacking() || currentAction == Constants.PlayerActions.DEATH || currentAction == Constants.PlayerActions.HIT) {
             return;
         }
 
@@ -122,6 +125,10 @@ public class Player extends GameCharacter {
         if (attackProtectionFrames > 0) {
             attackProtectionFrames--;
             if (attackProtectionFrames == 0) isAttackingProtected = false;
+        }
+        if (invincibilityFrames > 0) {
+            invincibilityFrames--;
+            if (invincibilityFrames == 0) isInvincible = false;
         }
 
         if (!isGrounded) {
@@ -220,6 +227,10 @@ public class Player extends GameCharacter {
                 attacking = false;
                 setAction(Constants.PlayerActions.IDLE);
             }
+            case Constants.PlayerActions.HIT -> {
+                attacking = false; // Reset attacking state in case a combo was interrupted
+                setAction(Constants.PlayerActions.IDLE);
+            }
             case Constants.PlayerActions.DASH -> {
                 isDashing = false;
                 setAction(Constants.PlayerActions.IDLE);
@@ -255,9 +266,11 @@ public class Player extends GameCharacter {
 
     @Override
     public void takeDamage(int damage) {
-        if (!isAlive || isJumpingOverEnemy || isAttackingProtected) return;
-        health -= Math.max(1, damage - 5);
+        if (!isAlive || isJumpingOverEnemy || isAttackingProtected || isInvincible) return;
+        health -= damage;
         audio.SoundManager.getInstance().playSound("hurt"); // SOUND ADDED
+        isInvincible = true;
+        invincibilityFrames = INVINCIBILITY_DURATION;
 
         if (health > 0) {
             setAction(Constants.PlayerActions.HIT);
