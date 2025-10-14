@@ -87,7 +87,7 @@ public class GamePanel extends JPanel {
         checkCollisions();
         checkCombat();
         checkEnemyAttacks();
-        removeDeadEnemies();
+        removeDeadAndOffscreenEnemies();
         hud.update(enemies.size());
         if (levelManager.isPortalSpawned()) {
             Portal portal = levelManager.getPortal();
@@ -150,20 +150,30 @@ public class GamePanel extends JPanel {
             }
         }
     }
-    public void removeDeadEnemies() {
+    public void removeDeadAndOffscreenEnemies() {
+        List<Enemy> toRemove = new ArrayList<>();
         List<Enemy> deadEnemies = new ArrayList<>();
+        int playerX = player.getX();
+        final int despawnDistance = 2000;
+
         for (Enemy enemy : enemies) {
             if (!enemy.isAlive()) {
-                deadEnemies.add(enemy);
+                toRemove.add(enemy);
+                deadEnemies.add(enemy); // Keep track of them for score/etc
+            } else if (Math.abs(playerX - enemy.getX()) > despawnDistance) {
+                toRemove.add(enemy);
             }
         }
+
+        if (!toRemove.isEmpty()) {
+            enemies.removeAll(toRemove);
+            characters.removeAll(toRemove);
+        }
+        
         if (!deadEnemies.isEmpty()) {
-            enemies.removeAll(deadEnemies);
-            characters.removeAll(deadEnemies);
             totalEnemiesDefeated += deadEnemies.size();
             for (int i = 0; i < deadEnemies.size(); i++) {
                 levelManager.onEnemyDefeated();
-//                soundManager.playSound("kill"); // SOUND ADDED
             }
         }
     }

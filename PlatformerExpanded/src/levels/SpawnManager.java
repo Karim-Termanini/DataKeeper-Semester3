@@ -54,16 +54,13 @@ public class SpawnManager {
 
     private int getRandomSpawnX() {
         int playerX = player.getX();
-        int spawnX;
-        if (random.nextBoolean()) {
-            spawnX = random.nextInt(300);
-        } else {
-            spawnX = LEVEL_WIDTH - 300 + random.nextInt(300);
-        }
-        if (Math.abs(spawnX - playerX) < 400) {
-            spawnX = (spawnX < playerX) ? playerX - 400 : playerX + 400;
-        }
-        spawnX = Math.max(0, Math.min(spawnX, LEVEL_WIDTH - 140));
+        int screenWidth = 1800; // GamePanel width
+        int offset = screenWidth / 2 + random.nextInt(200); // Spawn just off-screen
+
+        int spawnX = playerX + (random.nextBoolean() ? offset : -offset);
+
+        // Clamp the spawn position to be within the level boundaries
+        spawnX = Math.max(0, Math.min(spawnX, LEVEL_WIDTH - 140)); // 140 is assumed enemy width
         
         return spawnX;
     }
