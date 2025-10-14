@@ -46,6 +46,7 @@ public class ChaserEnemy extends Enemy {
 
 
     // This is the CORRECT AI logic, based on the user's working code.
+    @Override
     protected void decideNextAction() {
         // Fixed: Cooldown decrement logic
         if (attackCooldownTimer > 0) {

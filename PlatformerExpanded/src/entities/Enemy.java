@@ -66,7 +66,7 @@ public class Enemy extends GameCharacter {
         if (isHit) {
             setAction(Constants.EnemyActions.HIT);
         } else {
-            followPlayer();
+            decideNextAction();
         }
 
         updateAnimation();
@@ -74,7 +74,7 @@ public class Enemy extends GameCharacter {
     }
 
 
-    private void followPlayer() {
+    protected void decideNextAction() {
         if (target == null || !target.isAlive() || currentAction == Constants.EnemyActions.FIGHT) {
             setAction(Constants.EnemyActions.IDLE);
             return;
@@ -100,36 +100,6 @@ public class Enemy extends GameCharacter {
             }
         }
     }
-
-
-    // CORRECTED AI LOGIC from user's working code: Move first, then check for attack.
-//    private void followPlayer() {
-//        if (target == null || !target.isAlive() || currentAction == Constants.EnemyActions.FIGHT) {
-//            setAction(Constants.EnemyActions.IDLE);
-//            return;
-//        }
-//
-//        int distance = Math.abs(getX() - target.getX());
-//
-//        if (distance < 600) { // Vision Range
-//            // Move towards player
-//            if (target.getX() < getX()) {
-//                facingRight = false;
-//                x -= speed;
-//            } else {
-//                facingRight = true;
-//                x += speed;
-//            }
-//            setAction(Constants.EnemyActions.WALK);
-//
-//            // After moving, check if in attack range and ready to attack
-//            if (Math.abs(getX() - target.getX()) < Constants.ATTACK_RANGE && attackCooldown == 0) {
-//                attack();
-//            }
-//        } else {
-//            setAction(Constants.EnemyActions.IDLE);
-//        }
-//    }
 
     private void updatePosition() {
         if (x < 0) x = 0;
