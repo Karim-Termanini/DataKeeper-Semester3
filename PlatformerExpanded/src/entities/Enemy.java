@@ -12,7 +12,7 @@ public class Enemy extends GameCharacter {
     private int health = 100;
     private boolean isHit = false;
     private int hitCooldown = 0;
-    private int attackCooldown = 0;
+    public int attackCooldown = 0;
     private final int ATTACK_DAMAGE = 10;
     private final float speed = 1.5f;
 
@@ -74,62 +74,44 @@ public class Enemy extends GameCharacter {
     }
 
 
-    private void followPlayer() {
+    // CORRECTED AI LOGIC from user's working code: Move first, then check for attack.
+    protected void followPlayer() {
+        // 1. If we shouldn't be moving, stop and stand idle.
         if (target == null || !target.isAlive() || currentAction == Constants.EnemyActions.FIGHT) {
             setAction(Constants.EnemyActions.IDLE);
             return;
         }
 
-        int distance = Math.abs(getX() - target.getX());
+        // 2. Determine direction based on player's position.
+        boolean playerIsToTheLeft = target.getX() < this.getX();
 
+        // 3. Set facing direction
+        if (playerIsToTheLeft) {
+            this.facingRight = false;
+        } else {
+            this.facingRight = true;
+        }
+
+        // 4. Check if we are in attack range.
+        int distance = Math.abs(this.getX() - target.getX());
         if (distance < Constants.ATTACK_RANGE) {
+            // If ready to attack, then attack.
             if (attackCooldown == 0) {
-                attack();
+                attack(); // This will set the action to FIGHT
             } else {
+                // If on cooldown, just stand idle.
                 setAction(Constants.EnemyActions.IDLE);
             }
         } else {
-            // Always chase the player if not in attack range
-            setAction(Constants.EnemyActions.WALK);
-            if (target.getX() < getX()) {
-                facingRight = false;
-                x -= speed;
+            // 5. If not in attack range, move towards the player.
+            if (playerIsToTheLeft) {
+                this.x -= this.speed;
             } else {
-                facingRight = true;
-                x += speed;
+                this.x += this.speed;
             }
+            setAction(Constants.EnemyActions.WALK);
         }
     }
-
-
-    // CORRECTED AI LOGIC from user's working code: Move first, then check for attack.
-//    private void followPlayer() {
-//        if (target == null || !target.isAlive() || currentAction == Constants.EnemyActions.FIGHT) {
-//            setAction(Constants.EnemyActions.IDLE);
-//            return;
-//        }
-//
-//        int distance = Math.abs(getX() - target.getX());
-//
-//        if (distance < 600) { // Vision Range
-//            // Move towards player
-//            if (target.getX() < getX()) {
-//                facingRight = false;
-//                x -= speed;
-//            } else {
-//                facingRight = true;
-//                x += speed;
-//            }
-//            setAction(Constants.EnemyActions.WALK);
-//
-//            // After moving, check if in attack range and ready to attack
-//            if (Math.abs(getX() - target.getX()) < Constants.ATTACK_RANGE && attackCooldown == 0) {
-//                attack();
-//            }
-//        } else {
-//            setAction(Constants.EnemyActions.IDLE);
-//        }
-//    }
 
     private void updatePosition() {
         if (x < 0) x = 0;

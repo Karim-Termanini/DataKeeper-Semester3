@@ -308,6 +308,7 @@ public class GamePanel extends JPanel {
         totalEnemiesDefeated = 0;
         player = new Player();
         characters.add(player);
+        levelManager.setPlayer(player);
         levelManager.restartGame();
         hud = new HUD(player, levelManager.getTimer(), levelManager.getCurrentConfig(), 1);
         portalInteractionReady = false;

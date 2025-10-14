@@ -42,5 +42,5 @@ public class Constants {
     // Attack constants
     public static final int HIT_COOLDOWN = 30; // Frames
     public static final int ATTACK_COOLDOWN = 60; // Frames
-    public static final int ATTACK_RANGE = 150; // Pixels
+    public static final int ATTACK_RANGE = 80; // Pixels
 }
