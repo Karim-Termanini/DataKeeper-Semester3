@@ -86,6 +86,7 @@ public class GamePanel extends JPanel {
         updateCamera();
         checkCollisions();
         checkCombat();
+        checkEnemyAttacks();
         removeDeadEnemies();
         hud.update(enemies.size());
         if (levelManager.isPortalSpawned()) {
@@ -143,6 +144,7 @@ public class GamePanel extends JPanel {
                 player.setPosition(player.getX() + 25, player.getY());
             }
 
+            // RESTORED BUMP DAMAGE
             if (player.isAlive() && !player.hasJumpOverProtection() && !player.isAttackingProtected()) {
                 player.takeDamage(enemy.getAttackDamage());
             }
@@ -170,6 +172,16 @@ public class GamePanel extends JPanel {
             for (Enemy enemy : enemies) {
                 if (enemy.isAlive() && player.isAttackingEnemy(enemy)) {
                     enemy.takeDamage(player.getAttackDamage());
+                }
+            }
+        }
+    }
+
+    private void checkEnemyAttacks() {
+        for (Enemy enemy : enemies) {
+            if (enemy.isAlive() && enemy.isAttacking()) {
+                if (enemy.getAttackHitbox().intersects(player.getHitbox())) {
+                    player.takeDamage(enemy.getAttackDamage());
                 }
             }
         }
@@ -270,6 +282,7 @@ public class GamePanel extends JPanel {
         totalEnemiesDefeated = 0;
         player = new Player();
         characters.add(player);
+        levelManager.setPlayer(player);
         levelManager.restartGame();
         levelManager.setGameState(GameState.PLAYING);
         levelManager.startLevel();

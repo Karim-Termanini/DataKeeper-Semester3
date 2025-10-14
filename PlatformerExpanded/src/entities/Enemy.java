@@ -15,6 +15,9 @@ public class Enemy extends GameCharacter {
     public int attackCooldown = 0;
     private final int ATTACK_DAMAGE = 10;
     private final float speed = 1.5f;
+    private boolean isInvincible = false;
+    private int invincibilityFrames = 0;
+    private final int INVINCIBILITY_DURATION = 30; // 0.5 seconds
 
     public Enemy(int startX, Player target) {
         super();
@@ -62,6 +65,10 @@ public class Enemy extends GameCharacter {
 
         if (hitCooldown > 0) hitCooldown--;
         if (attackCooldown > 0) attackCooldown--;
+        if (invincibilityFrames > 0) {
+            invincibilityFrames--;
+            if (invincibilityFrames == 0) isInvincible = false;
+        }
 
         if (isHit) {
             setAction(Constants.EnemyActions.HIT);
@@ -74,10 +81,13 @@ public class Enemy extends GameCharacter {
     }
 
 
-    // CORRECTED AI LOGIC from user's working code: Move first, then check for attack.
+    // CORRECTED AI LOGIC from user's proven logic and requests.
     protected void followPlayer() {
         // 1. If we shouldn't be moving, stop and stand idle.
-        if (target == null || !target.isAlive() || currentAction == Constants.EnemyActions.FIGHT) {
+        if (currentAction == Constants.EnemyActions.FIGHT) {
+            return; // Don't interrupt an ongoing attack
+        }
+        if (target == null || !target.isAlive()) {
             setAction(Constants.EnemyActions.IDLE);
             return;
         }
@@ -94,7 +104,7 @@ public class Enemy extends GameCharacter {
 
         // 4. Check if we are in attack range.
         int distance = Math.abs(this.getX() - target.getX());
-        if (distance < Constants.ATTACK_RANGE) {
+        if (distance <= Constants.ATTACK_RANGE) {
             // If ready to attack, then attack.
             if (attackCooldown == 0) {
                 attack(); // This will set the action to FIGHT
@@ -135,9 +145,11 @@ public class Enemy extends GameCharacter {
 
     @Override
     public void takeDamage(int damage) {
-        if (!isAlive) return;
+        if (!isAlive || isInvincible) return;
         health -= damage;
         isHit = true;
+        isInvincible = true;
+        invincibilityFrames = INVINCIBILITY_DURATION;
         hitCooldown = Constants.HIT_COOLDOWN;
         setAction(Constants.EnemyActions.HIT);
         audio.SoundManager.getInstance().playSound("hit");
@@ -146,7 +158,6 @@ public class Enemy extends GameCharacter {
             health = 0;
             isAlive = false;
             setAction(Constants.EnemyActions.DEATH);
-            // ENEMY DEATH SOUND REMOVED AS REQUESTED
         }
     }
 
@@ -189,6 +200,16 @@ public class Enemy extends GameCharacter {
     @Override public int getHeight() { return 140; }
     @Override public boolean isAttacking() { return currentAction == Constants.EnemyActions.FIGHT; }
     @Override public Rectangle getHitbox() { return new Rectangle((int)x + 30, (int)y + 20, getWidth() - 60, getHeight() - 40); }
+    public Rectangle getAttackHitbox() {
+        Rectangle attackBox = getHitbox(); // Start with the base hitbox
+        if (facingRight) {
+            attackBox.x += attackBox.width; // Place it just to the right of the hitbox
+        } else {
+            attackBox.x -= attackBox.width; // Place it just to the left
+        }
+        return attackBox;
+    }
+
     @Override public int getAttackDamage() { return ATTACK_DAMAGE; }
     @Override public void specialAttack() { attack(); }
     @Override public void moveLeft() {}
@@ -206,6 +227,12 @@ public class Enemy extends GameCharacter {
         this.currentAction = action;
         this.animationIndex = 0;
         this.animationTick = 0;
+
+        if (action == Constants.EnemyActions.FIGHT) {
+            animationSpeed = 10; // Back to a normal speed
+        } else {
+            animationSpeed = 15; // A default for other actions
+        }
     }
     public int getCurrentAction() { return currentAction; }
     public boolean isAlive() { return isAlive; }
