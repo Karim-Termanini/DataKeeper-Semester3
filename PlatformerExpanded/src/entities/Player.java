@@ -290,12 +290,20 @@ public class Player extends GameCharacter {
     }
 
     public Rectangle getAttackHitbox() {
-        int attackRange = 100;
+        int attackRange = 60; // Reduced from 100
         int attackHeight = 100;
+        int playerHitboxX = (int)x + 30;
+        int playerHitboxWidth = getWidth() - 60;
+        int playerHitboxY = (int)y + 20;
+
         if (facingRight) {
-            return new Rectangle((int)x + getWidth() - 20, (int)y + 20, attackRange, attackHeight);
+            // Hitbox starts at the right edge of the player's body hitbox
+            int attackX = playerHitboxX + playerHitboxWidth;
+            return new Rectangle(attackX, playerHitboxY, attackRange, attackHeight);
         } else {
-            return new Rectangle((int)x - attackRange + 20, (int)y + 20, attackRange, attackHeight);
+            // Hitbox starts 'attackRange' pixels to the left of the player's body hitbox
+            int attackX = playerHitboxX - attackRange;
+            return new Rectangle(attackX, playerHitboxY, attackRange, attackHeight);
         }
     }
 
