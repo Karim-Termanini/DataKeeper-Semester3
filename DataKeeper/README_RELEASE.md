@@ -1,23 +1,23 @@
 # DATA KEEPER — Release Build
 
-## How to run (JAR)
-1. Build the release JAR
+## Ausführung (JAR)
+1. Erstellen Sie die Release-JAR
 
 ```sh
 ./package.sh
 ```
 
-2. Run it
+2. Führen Sie sie aus
 
 ```sh
 java -jar dist/DATA_KEEPER.jar
 ```
 
-## Notes
-- Resources are embedded in the JAR; the game will also look for files under `res/` on the filesystem if present.
-- If you want a custom boss background image, put it at `res/level4-Backgrounds/boss.png` before packaging.
-- Audio volumes can be adjusted in the main menu. Warning beep for boss telegraphs is intentionally quieter.
+## Hinweise
+- Ressourcen sind in der JAR eingebettet; das Spiel sucht auch nach Dateien unter `res/` im Dateisystem, falls vorhanden.
+- Wenn Sie ein benutzerdefiniertes Boss-Hintergrundbild verwenden möchten, legen Sie es vor dem Packagieren unter `res/level4-Backgrounds/boss.png` ab.
+- Audio-Lautstärken können im Hauptmenü angepasst werden. Warnpiepser für Boss-Telegraphs sind absichtlich leiser.
 
-## Troubleshooting
-- If audio fails on some Linux setups (headless audio drivers), the game will fall back to synthesized SFX/music where possible.
-- For better performance, close other heavy apps while playing.
+## Fehlerbehebung
+- Falls Audio auf einigen Linux-Systemen fehlschlägt (headless Audio-Treiber), wird das Spiel wo möglich auf synthetisierte SFX/Musik zurückgreifen.
+- Für bessere Performance schließen Sie andere rechenintensive Anwendungen während des Spielens.

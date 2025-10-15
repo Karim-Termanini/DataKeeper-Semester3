@@ -1,232 +1,226 @@
 # DATA KEEPER
 
-## Overview
+## Überblick
+Ein 2D-Überlebens-Arena-Kampfspiel mit progressivem Levelsystem, mehreren Gegnertypen und dynamischen Kampfmechaniken.
 
-A 2D survival arena fighter game with progressive level system, multiple enemy types, and dynamic combat mechanics.
+## Funktionen
 
-## Features
+### Kernspielprinzip
+- **Überlebensmodus**: Überlebe eine festgelegte Zeit während Wellen von Gegnern
+- **Progressives Levelsystem**: 3+ Level mit steigendem Schwierigkeitsgrad
+- **Mehrere Gegnertypen**:
+  - **Verfolger**: Schnelle Nahkampfangreifer, die den Spieler jagen
+  - **Schütze**: Fernkampfgegner, die Abstand halten und Projektilfeuer abgeben
+  - **Panzer**: Langsame Gegner mit hohen HP und schwerem Schaden
+- **Portalsystem**: Schließe den Timer ab, um ein Ausstiegsportal zu spawnen und zum nächsten Level zu gelangen
 
-### Core Gameplay
-- **Survival Mode**: Survive for a set duration while fighting waves of enemies
-- **Progressive Levels**: 3+ levels with increasing difficulty
-- **Multiple Enemy Types**:
-  - **Chaser**: Fast melee attackers that chase the player
-  - **Shooter**: Ranged enemies that maintain distance and fire projectiles
-  - **Tank**: Slow, high-HP enemies with heavy damage
-- **Portal System**: Complete the timer to spawn exit portal and advance to next level
+### Spielerfähigkeiten
+- **Bewegung**: WASD-Steuerung mit flüssigen Animationen
+- **Springen**: Leertaste (Doppelsprung verfügbar)
+- **Ausweichen**: Umschalttaste für schnelles Ausweichen
+- **Rutschen**: S-Taste für Bewegung in niedriger Haltung mit Schaden
+- **Kombo-Angriffe**: E-Taste für Bodenkombos mit steigendem Schaden
+- **Luftangriff**: W-Taste für Luftkampf
+- **Kampfsystem**: Kombo-Multiplikatoren, Unverwundbarkeitsframes und strategische Positionierung
 
-### Player Abilities
-- **Movement**: WASD controls with smooth animations
-- **Jump**: Space bar (double jump available)
-- **Dash**: Shift key for quick evasion
-- **Slide**: S key for low-profile movement with damage
-- **Combo Attacks**: E key for ground combos with increasing damage
-- **Air Attack**: W key for aerial combat
-- **Combat System**: Combo multipliers, invincibility frames, and strategic positioning
+### Level-Fortschritt
+- **Level 1**: 30 Sekunden, 5 Verfolger-Gegner
+- **Level 2**: 45 Sekunden, 8 Gegner (5 Verfolger + 3 Schützen)
+- **Level 3**: 60 Sekunden, 12 Gegner (5 Verfolger + 4 Schützen + 3 Panzer)
+- **Level 4+**: Dynamisch skalierter Schwierigkeitsgrad
 
-### Level Progression
-- **Level 1**: 30 seconds, 5 Chaser enemies
-- **Level 2**: 45 seconds, 8 enemies (5 Chasers + 3 Shooters)
-- **Level 3**: 60 seconds, 12 enemies (5 Chasers + 4 Shooters + 3 Tanks)
-- **Level 4+**: Dynamically scaled difficulty
+### UI-Funktionen
+- Echtzeit-Gesundheitsleiste mit Farbindikatoren
+- Countdown-Timer mit visuellen Warnungen
+- Levelnummer und Gegnerzähler
+- Komboanzeige
+- Levelabschlussbildschirm mit Statistiken
+- Spielende-Bildschirm mit Neustart-Option
 
-### UI Features
-- Real-time health bar with color indicators
-- Countdown timer with visual warnings
-- Level number and enemy counter
-- Combo display
-- Level complete screen with stats
-- Game over screen with restart option
+## Steuerung
 
-## Controls
+### Bewegung
+- **A**: Nach links bewegen
+- **D**: Nach rechts bewegen
+- **Leertaste**: Springen (zweimal drücken für Doppelsprung)
+- **Umschalt**: Ausweichen
+- **S**: Rutschen
 
-### Movement
-- **A**: Move Left
-- **D**: Move Right
-- **Space**: Jump (press twice for double jump)
-- **Shift**: Dash
-- **S**: Slide
+### Kampf
+- **E**: Angreifen / Portal betreten
+- **W**: Luftangriff (während des Sprungs)
 
-### Combat
-- **E**: Attack / Enter Portal
-- **W**: Air Attack (while airborne)
+### Spielablauf
+- **Eingabe**: Zum nächsten Level fortfahren (auf Levelabschlussbildschirm)
+- **R**: Spiel neustarten (auf Spielende-Bildschirm)
 
-### Game Flow
-- **Enter**: Continue to next level (on level complete screen)
-- **R**: Restart game (on game over screen)
+## Kompilierung und Ausführung
 
-## How to Compile and Run
+### Voraussetzungen
+- Java Development Kit (JDK) 8 oder höher
+- Terminal/Command Prompt Zugriff
 
-### Prerequisites
-- Java Development Kit (JDK) 8 or higher
-- Terminal/Command Prompt access
-
-### Compilation
+### Kompilierung
 ```bash
 cd DataKeeper
 javac -d out src/**/*.java
 ```
 
-### Running
+### Ausführung
 ```bash
 cd DataKeeper
 java -cp out:res main.Main
 ```
 
-### Alternative: Using IDE
-1. Open the `DataKeeper` folder in your IDE (IntelliJ IDEA, Eclipse, etc.)
-2. Mark `src` as source root
-3. Mark `res` as resources root
-4. Run `main.Main`
+### Alternative: Verwendung einer IDE
+1. Öffnen Sie den `DataKeeper`-Ordner in Ihrer IDE (IntelliJ IDEA, Eclipse, etc.)
+2. Markieren Sie `src` als Quellverzeichnis
+3. Markieren Sie `res` als Ressourcenverzeichnis
+4. Führen Sie `main.Main` aus
 
-## Generate JavaDoc
+## JavaDoc generieren
+Sie können API-Dokumentation (JavaDoc) lokal generieren:
 
-You can generate API documentation (JavaDoc) locally:
-
-Option A  Script
-
+Option A - Skript
 ```bash
 ./javadoc.sh
 ```
 
-Option B  Direct command
-
+Option B - Direkter Befehl
 ```bash
-javadoc -d docs/javadoc -sourcepath src \
-  -subpackages main:entities:levels:gameplay:ui:audio:utils:inputs \
-  -author -version
+javac -d docs/javadoc -sourcepath src \
+-subpackages main:entities:levels:gameplay:ui:audio:utils:inputs \
+-author -version
 ```
 
-The output will be in `docs/javadoc/index.html`.
+Die Ausgabe befindet sich in `docs/javadoc/index.html`.
 
-## Project Structure
-
+## Projektstruktur
 ```
 PlatformerExpanded/
 ├── src/
 │   ├── entities/
-│   │   ├── Character.java          # Interface for all characters
-│   │   ├── GameCharacter.java      # Abstract base class
-│   │   ├── Player.java             # Player character with all abilities
-│   │   ├── Enemy.java              # Original enemy (legacy)
-│   │   ├── ChaserEnemy.java        # Fast melee enemy
-│   │   ├── ShooterEnemy.java       # Ranged projectile enemy
-│   │   ├── TankEnemy.java          # Heavy damage tank enemy
-│   │   └── Projectile.java         # Projectile for shooter enemies
+│   │   ├── Character.java      # Interface für alle Charaktere
+│   │   ├── GameCharacter.java  # Abstrakte Basisklasse
+│   │   ├── Player.java         # Spielercharakter mit allen Fähigkeiten
+│   │   ├── Enemy.java          # Ursprünglicher Gegner (Legacy)
+│   │   ├── ChaserEnemy.java    # Schneller Nahkampfgegner
+│   │   ├── ShooterEnemy.java   # Fernkampf-Projektilgegner
+│   │   ├── TankEnemy.java      # Schwerer Panzergegner
+│   │   └── Projectile.java     # Projektil für Schützengegner
 │   ├── levels/
-│   │   ├── LevelConfig.java        # Level configuration data
-│   │   ├── LevelManager.java       # Manages level progression
-│   │   ├── Portal.java             # Exit portal for level completion
-│   │   └── SpawnManager.java       # Handles enemy spawning
+│   │   ├── LevelConfig.java    # Level-Konfigurationsdaten
+│   │   ├── LevelManager.java   # Verwaltet Level-Fortschritt
+│   │   ├── Portal.java         # Ausstiegsportal für Levelabschluss
+│   │   └── SpawnManager.java   # Verwaltet Gegner-Spawning
 │   ├── gameplay/
-│   │   ├── GameState.java          # Game state enumeration
-│   │   └── SurvivalTimer.java      # Countdown timer system
+│   │   ├── GameState.java      # Spielzustands-Enumeration
+│   │   └── SurvivalTimer.java  # Countdown-Timer-System
 │   ├── ui/
-│   │   ├── HUD.java                # Heads-up display
-│   │   ├── LevelCompleteScreen.java # Victory screen
-│   │   └── GameOverScreen.java     # Defeat screen
+│   │   ├── HUD.java            # Heads-up-Display
+│   │   ├── LevelCompleteScreen.java # Siegesbildschirm
+│   │   └── GameOverScreen.java # Niederlagenbildschirm
 │   ├── inputs/
-│   │   ├── KeyboardInputs.java     # Keyboard input handler
-│   │   └── MouseInputs.java        # Mouse input handler
+│   │   ├── KeyboardInputs.java # Tastatureingabe-Handler
+│   │   └── MouseInputs.java    # Mauseingabe-Handler
 │   ├── main/
-│   │   ├── Main.java               # Entry point
-│   │   ├── Game.java               # Game loop
-│   │   ├── GamePanel.java          # Main game panel with rendering
-│   │   └── GameWindow.java         # Window setup
+│   │   ├── Main.java           # Einstiegspunkt
+│   │   ├── Game.java           # Spielschleife
+│   │   ├── GamePanel.java      # Hauptspielpanel mit Rendering
+│   │   └── GameWindow.java     # Fenstereinrichtung
 │   └── utils/
-│       └── AnimationManager.java   # Animation utilities
+│       └── AnimationManager.java # Animations-Utilities
 └── res/
     ├── Enemy/
-    │   └── glitsoul/               # Enemy sprite sheets
-    └── Fighter sprites/            # Player sprite sheets
+    │   └── glitsoul/           # Gegner-Sprite-Sheets
+    └── Fighter sprites/        # Spieler-Sprite-Sheets
 ```
 
-## Game Mechanics
+## Spielmechaniken
 
-### Survival Timer
-- Each level has a specific duration
-- Timer counts down in real-time
-- When timer reaches 0:
-  - Enemy spawning stops
-  - All remaining enemies despawn
-  - Exit portal appears at arena center
+### Überlebens-Timer
+- Jedes Level hat eine bestimmte Dauer
+- Timer zählt in Echtzeit herunter
+- Wenn der Timer 0 erreicht:
+  - Gegner-Spawning stoppt
+  - Alle verbleibenden Gegner verschwinden
+  - Ausstiegsportal erscheint in der Arenamitte
 
-### Enemy Spawning
-- Enemies spawn at intervals based on level configuration
-- Spawn locations are randomized at arena edges
-- Spawning continues until level enemy cap is reached
-- Spawning stops when timer completes
+### Gegner-Spawning
+- Gegner spawnen in Intervallen basierend auf Level-Konfiguration
+- Spawn-Positionen sind an Arena-Rändern zufällig
+- Spawning setzt sich fort bis Level-Gegnerlimit erreicht ist
+- Spawning stoppt wenn Timer abgeschlossen ist
 
-### Combat System
-- **Combo System**: Chain attacks for increased damage
-- **Invincibility Frames**: Brief protection during certain actions
-- **Jump Over**: Jump on enemies to avoid damage
-- **Slide Attack**: Low-profile movement with damage
-- **Projectile Dodging**: Avoid shooter enemy projectiles
+### Kampfsystem
+- **Kombo-System**: Kettenangriffe für erhöhten Schaden
+- **Unverwundbarkeitsframes**: Kurzer Schutz während bestimmter Aktionen
+- **Überspringen**: Über Gegner springen um Schaden zu vermeiden
+- **Rutschangriff**: Bewegung in niedriger Haltung mit Schaden
+- **Projektil-Ausweichen**: Schützengegner-Projektilen ausweichen
 
-### Enemy AI
-- **Chasers**: Direct pursuit, melee attacks when in range
-- **Shooters**: Maintain distance, fire projectiles at player
-- **Tanks**: Slow advance, heavy damage, damage reduction
+### Gegner-KI
+- **Verfolger**: Direkte Verfolgung, Nahkampfangriffe in Reichweite
+- **Schützen**: Abstand halten, feuern Projektile auf Spieler
+- **Panzer**: Langsamer Vormarsch, schwerer Schaden, Schadensreduktion
 
-## Customization
+## Anpassung
 
-### Adding New Levels
-Edit `LevelConfig.java` to add new level configurations:
+### Neue Level hinzufügen
+Bearbeiten Sie `LevelConfig.java` um neue Level-Konfigurationen hinzuzufügen:
 ```java
 public static LevelConfig getLevel4() {
     return new LevelConfig(4, 75, 8, 6, 4, 3.5f);
 }
 ```
 
-### Adjusting Difficulty
-Modify values in `LevelConfig.java`:
-- `duration`: Survival time in seconds
-- `chaserCount`, `shooterCount`, `tankCount`: Enemy quantities
-- `spawnInterval`: Time between enemy spawns
+### Schwierigkeitsgrad anpassen
+Modifizieren Sie Werte in `LevelConfig.java`:
+- `duration`: Überlebenszeit in Sekunden
+- `chaserCount`, `shooterCount`, `tankCount`: Gegneranzahlen
+- `spawnInterval`: Zeit zwischen Gegner-Spawns
 
-### Enemy Stats
-Adjust in respective enemy classes:
-- `health`: Enemy health points
-- `speed`: Movement speed
-- `ATTACK_DAMAGE`: Damage dealt to player
-- `ATTACK_COOLDOWN_MAX`: Time between attacks
+### Gegner-Statistiken
+Anpassen in jeweiligen Gegnerklassen:
+- `health`: Gegner-Gesundheitspunkte
+- `speed`: Bewegungsgeschwindigkeit
+- `ATTACK_DAMAGE`: Dem Spieler zugefügter Schaden
+- `ATTACK_COOLDOWN_MAX`: Zeit zwischen Angriffen
 
-## Technical Details
+## Technische Details
 
-### Performance
-- Target FPS: 120
-- Resolution: 1800x1000
-- Arena Size: 2000x1000
+### Leistung
+- Ziel-FPS: 120
+- Auflösung: 1800x1000
+- Arena-Größe: 2000x1000
 
-### Camera System
-- Smooth camera following player
-- Bounded to arena limits
-- UI rendered without camera offset
+### Kamerasystem
+- Sanfte Kamera folgt dem Spieler
+- An Arena-Grenzen gebunden
+- UI wird ohne Kameraversatz gerendert
 
-### Animation System
-- Frame-based sprite animation
-- Variable animation speeds per action
-- Automatic frame cycling and completion handling
+### Animationssystem
+- Frame-basierte Sprite-Animation
+- Variable Animationsgeschwindigkeiten pro Aktion
+- Automatisches Frame-Cycling und Abschlussbehandlung
 
-## Known Features
-- Combo system with damage multipliers
-- Double jump mechanics
-- Enemy type visual distinction (color overlays)
-- Pulsing portal animation
-- Health bar color indicators
-- Timer color warnings
+## Bekannte Funktionen
+- Kombosystem mit Schadensmultiplikatoren
+- Doppelsprung-Mechaniken
+- Visuelle Unterscheidung der Gegnertypen (Farbüberlagerungen)
+- Pulsierende Portal-Animation
+- Gesundheitsleiste mit Farbindikatoren
+- Timer-Farbwarnungen
 
 ## Credits
-- Original game concept and base mechanics
-- Expanded with level system, multiple enemy types, and survival mode
-- Sprite assets from original project
+- Ursprüngliches Spielkonzept und Basis-Mechaniken
+- Erweitert mit Levelsystem, mehreren Gegnertypen und Überlebensmodus
+- Sprite-Assets vom Originalprojekt
 
 ## Version
-**Expanded Edition v1.0**
-- Full level progression system
-- 3 enemy types
-- Survival timer mechanics
-- Portal system
-- Complete UI overhaul
-
+**Erweiterte Edition v1.0**
+- Vollständiges Level-Fortschrittssystem
+- 3 Gegnertypen
+- Überlebens-Timer-Mechaniken
+- Portalsystem
+- Komplette UI-Überarbeitung
