@@ -224,6 +224,69 @@ Anpassen in jeweiligen Gegnerklassen:
 - Überlebens-Timer-Mechaniken
 - Portalsystem
 - Komplette UI-Überarbeitung
+
+
+
+
+# Algorithmen – Kurzbeschreibung
+
+Diese Seite fasst die wichtigsten Abläufe im Spiel kurz und einfach zusammen. Kein Deep-Dive – nur das Nötigste zum Verstehen und Erklären.
+
+## Spielersteuerung (Player)
+- Eingaben: A/D bewegen, SPACE springen, E angreifen/Portal, S rutschen, SHIFT dashen.
+- Bewegung: horizontale Geschwindigkeit konstant; bei JUMP vertikale Geschwindigkeit (airSpeed) mit Gravitation.
+- Sprung: reduzierte Sprünge (jumpsLeft), Boden-Erkennung mit Hysterese (offGroundFrames) vermeidet Flackern.
+- Dash/Slide: temporärer Zustand mit eigener Dauer/Speed; blockiert andere Aktionen kurz.
+- Angriff: Nahkampf-Hitbox vor dem Spieler, Schaden nach Aktionsart (Combo/Air/Slide) + Level-Bonus.
+- Trefferfenster: pro Gegner kurzer Cooldown damit ein Schlag nicht mehrfach pro Frame zählt.
+- Schaden/Unverwundbarkeit: kurze iFrames nach Schaden; Zustandswechsel zu HIT/DEATH.
+- Combo-Zähler: zählt erfolgreiche Treffer in Zeitfenster; spielt passende SFX.
+
+## Kamera
+- Zielposition = Spielerposition – Offset.
+- Optionales sanftes Nachziehen (Lerp) mit Clamping an Levelgrenzen.
+- Optionaler Screen‑Shake bei Effekten.
+
+## Kollision & Schaden
+- Körper-Kollision: wenn Hitboxen von Player/Enemy schneiden.
+- Angriffs-Kollision: vergleicht Angriffs-Hitbox (Player/Enemy/Boss) mit Ziel-Hitbox.
+- Rückstoß/Positionskorrektur: kleine Verschiebung beim Stoß; Sonderfall: Über‑den‑Gegner‑springen.
+- Boss: eingehender Schaden reduziert (Balancing) und eigener AOE/Bewegungs-Hitboxen je Attacke.
+
+## Gegner‑KI (Enemy)
+- Zielverfolgung: bestimmt Richtung zum Spieler und läuft innerhalb Grenzen.
+- Angriffsentscheidung: in Reichweite und Cooldown=0 → Angriff; sonst IDLE/WALK.
+- Zustandshandling: HIT/DEATH blockieren andere Aktionen; Animationstakte je Zustand.
+
+## Boss‑Logik
+- Phasen: Phase 2 unter 50% HP, schnellere Telegraphen/Angriffe.
+- Angriffszyklus: Timer plant Telegraph → kurzer Warn‑Sound/Glow → Attacke (DASH/WAVE/JUMP) → Abklingzeit.
+
+
+## Spawning & Level
+- LevelManager (Singleton): hält LevelNummer, Timer, Config, Portal; steuert GameState.
+- SpawnManager: spawnt Gegner nach Intervall bis Cap aktiv; Bosslevel spawnt einen Boss.
+- Gegner‑Pool: EnemyPool liefert/recicelt Instanzen um Garbage zu reduzieren.
+- Portal: wird nach Timerende aktiviert (für Levelabschluss).
+
+## Audio
+- SoundManager (Singleton): lädt/cached Clips, spielt Musik/SFX.
+- Fallback‑SFX/Musik: generiert Töne bei fehlenden Dateien.
+- Ducking: senkt Musiklautstärke kurz nach lauten SFX; Combat‑Layer bei hoher Intensität.
+
+## HUD & Timer
+- HUD zeigt HP, Timer, Level, Gegnerzahlen, Combo.
+- SurvivalTimer zählt herunter; Farben ändern sich bei niedriger Restzeit.
+
+## Performance/Robustheit
+- Objekt‑Pool für Gegner, Synchrone Iteration für Effekte (Sparks) um ConcurrentModification zu vermeiden.
+- Debug‑Logs optional über Flag; Asset‑Fallbacks verhindern Abstürze.
+
+
+
+
+
+
 # DATA KEEPER — Release Build
 
 ## Ausführung (JAR)
@@ -247,3 +310,50 @@ java -jar dist/DATA_KEEPER.jar
 ## Fehlerbehebung
 - Falls Audio auf einigen Linux-Systemen fehlschlägt (headless Audio-Treiber), wird das Spiel wo möglich auf synthetisierte SFX/Musik zurückgreifen.
 - Für bessere Performance schließen Sie andere rechenintensive Anwendungen während des Spielens.
+
+
+
+# JavaDoc & Code-Konventionen
+
+Diese Seite erklärt kurz, wie die JavaDoc erzeugt wird und welche Konventionen im Projekt angewendet werden.
+
+## JavaDoc erzeugen
+Voraussetzung: JDK ist installiert (javac, javadoc).
+
+Option A – Skript (Linux/macOS):
+
+```bash
+./compile.sh && javadoc \
+  -d docs/javadoc \
+  -sourcepath src \
+  -subpackages main:entities:levels:gameplay:ui:audio:utils:inputs \
+  -author -version
+```
+
+Option B – Direktbefehl:
+
+```bash
+javadoc -d docs/javadoc -sourcepath src \
+  -subpackages main:entities:levels:gameplay:ui:audio:utils:inputs \
+  -author -version
+```
+
+Die generierte Dokumentation liegt danach unter `docs/javadoc`.
+
+## Java-Code-Konventionen
+- Benennung: Klassen `CamelCase` (Substantive), Methoden/Variablen `camelCase`.
+- Sichtbarkeit: Felder möglichst `private`, Zugriff über Getter/Methoden wo sinnvoll.
+- Final, Konstante: `static final` für Konstanten (siehe `utils.Constants`).
+- Pakete: kleinbuchstabig, thematisch gruppiert (z. B. `entities`, `levels`).
+- Kommentare: JavaDoc für public Klassen/Methoden; kurze Inline-Kommentare bei Logikstellen.
+- Imports: spezifische Imports, keine Wildcards wenn möglich (Ausnahmen bei Swing/AWT ggf. toleriert).
+- Formatierung: Einrückung 4 Leerzeichen, Zeilenlänge ~120 Zeichen.
+- Fehlerbehandlung: Loggen (nur bei DEBUG) und Fallbacks statt Abbruch (siehe Audio/Assets).
+
+## Hinweise
+- `package-info.java` ist pro Paket vorhanden und beschreibt den Zweck kurz.
+- Ressourcen (Bilder/Sounds) werden aus `res/` geladen; das beeinflusst die JavaDoc nicht.
+- Für PlantUML‑Diagramme siehe `docs/uml`.
+
+
+
