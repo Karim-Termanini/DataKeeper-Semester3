@@ -31,8 +31,7 @@ Diese Seite fasst die wichtigsten Abläufe im Spiel kurz und einfach zusammen. K
 ## Boss‑Logik
 - Phasen: Phase 2 unter 50% HP, schnellere Telegraphen/Angriffe.
 - Angriffszyklus: Timer plant Telegraph → kurzer Warn‑Sound/Glow → Attacke (DASH/WAVE/JUMP) → Abklingzeit.
-- Telegraph‑Visuals: Pfeلات/دوائر متقطعة/Reticle أرضي + ومضة بدء الهجوم.
-- Physik beim Sprung: vy + Gravitation، هبوط على خط baseline، AOE عند الاصطدام بالأرض.
+
 
 ## Spawning & Level
 - LevelManager (Singleton): hält LevelNummer, Timer, Config, Portal; steuert GameState.
