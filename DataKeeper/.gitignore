@@ -1,0 +1,21 @@
+# Build outputs
+/out/
+/bin/
+/dist/
+/build/
+/target/
+*.class
+*.log
+
+# IDE/Editor config
+.idea/
+*.iml
+.vscode/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Runtime data (generated at playtime)
+highscore.dat
+settings.dat
