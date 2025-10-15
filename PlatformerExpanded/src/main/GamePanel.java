@@ -209,9 +209,11 @@ public class GamePanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform originalTransform = g2d.getTransform();
         g2d.translate(-cameraX, -cameraY);
-        List<GameCharacter> charactersCopy = new ArrayList<>(characters);
-        for (GameCharacter character : charactersCopy) {
-            character.render(g);
+        for (int i = 0; i < characters.size(); i++) {
+            // We must check size on each iteration, in case a character is removed concurrently.
+            if (i < characters.size()) {
+                characters.get(i).render(g);
+            }
         }
         if (levelManager.isPortalSpawned()) {
             levelManager.getPortal().render(g);

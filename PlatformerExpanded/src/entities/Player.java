@@ -12,37 +12,37 @@ public class Player extends GameCharacter {
     private static final int LEVEL_WIDTH = Constants.LEVEL_WIDTH;
     private static final int LEVEL_HEIGHT = 1000;
 
-    private final int maxHealth = 200;
+    private final int maxHealth = Constants.Player.MAX_HEALTH;
     private int health = maxHealth;
 
     // === Physics & Movement ===
-    private final float gravity = 0.4f;
-    private final float jumpSpeed = -14.0f;
+    private final float gravity = Constants.Player.GRAVITY;
+    private final float jumpSpeed = Constants.Player.JUMP_SPEED;
     private static final int GROUND_LEVEL = Constants.GROUND_LEVEL;
     private float airSpeed = 0;
-    private int jumpsLeft = 2;
+    private int jumpsLeft = Constants.Player.INITIAL_JUMPS;
 
     // === Dash System (MODIFIED) ===
     private boolean isDashing = false;
-    private final float dashSpeed = 30.0f;
-    private final int dashDuration = 15;
+    private final float dashSpeed = Constants.Player.DASH_SPEED;
+    private final int dashDuration = Constants.Player.DASH_DURATION_FRAMES;
     private int dashCounter = 0;
 
     // === Protection Systems ===
     private boolean isJumpingOverEnemy = false;
     private int jumpOverProtectionFrames = 0;
-    private final int JUMP_OVER_PROTECTION_DURATION = 40;
+    private final int JUMP_OVER_PROTECTION_DURATION = Constants.Player.JUMP_OVER_PROTECTION_FRAMES;
     private boolean isAttackingProtected = false;
     private int attackProtectionFrames = 0;
-    private final int ATTACK_PROTECTION_DURATION = 15;
+    private final int ATTACK_PROTECTION_DURATION = Constants.Player.ATTACK_PROTECTION_FRAMES;
     private boolean isInvincible = false;
     private int invincibilityFrames = 0;
-    private final int INVINCIBILITY_DURATION = 60; // 1 second of invincibility
+    private final int INVINCIBILITY_DURATION = Constants.Player.INVINCIBILITY_FRAMES;
 
     // === Combo System ===
     private int comboCount = 0;
     private long lastAttackTime = 0;
-    private final int COMBO_TIME_WINDOW = 800;
+    private final int COMBO_TIME_WINDOW = Constants.Player.COMBO_TIME_WINDOW_MS;
     private boolean comboHitEnemy = false;
 
     public Player() {
@@ -137,7 +137,7 @@ public class Player extends GameCharacter {
             if (y >= GROUND_LEVEL) {
                 y = GROUND_LEVEL;
                 isGrounded = true;
-                jumpsLeft = 2;
+                jumpsLeft = Constants.Player.INITIAL_JUMPS;
                 airSpeed = 0;
                 isJumpingOverEnemy = false;
             }
@@ -155,7 +155,7 @@ public class Player extends GameCharacter {
             if (!facingRight) {
                 sub = flipImageHorizontally(sub);
             }
-            g.drawImage(sub, (int)x, (int)y, 140, 140, null);
+            g.drawImage(sub, (int)x, (int)y, getWidth(), getHeight(), null);
             drawHealthBar(g);
         } else {
             drawFallbackPlayer(g);
@@ -290,11 +290,11 @@ public class Player extends GameCharacter {
     }
 
     public Rectangle getAttackHitbox() {
-        int attackRange = 60; // Reduced from 100
-        int attackHeight = 100;
-        int playerHitboxX = (int)x + 30;
-        int playerHitboxWidth = getWidth() - 60;
-        int playerHitboxY = (int)y + 20;
+        int attackRange = Constants.Player.ATTACK_RANGE;
+        int attackHeight = Constants.Player.ATTACK_HEIGHT;
+        int playerHitboxX = (int)x + Constants.Player.HITBOX_X_OFFSET;
+        int playerHitboxWidth = getWidth() - Constants.Player.HITBOX_WIDTH_REDUCTION;
+        int playerHitboxY = (int)y + Constants.Player.HITBOX_Y_OFFSET;
 
         if (facingRight) {
             // Hitbox starts at the right edge of the player's body hitbox
@@ -334,22 +334,29 @@ public class Player extends GameCharacter {
     public int getCurrentAction() { return currentAction; }
     public boolean hasJumpOverProtection() { return isJumpingOverEnemy && jumpOverProtectionFrames > 0; }
     
-    @Override public float getSpeed() { return 7.0f; } // Increased speed
+    @Override public float getSpeed() { return Constants.Player.SPEED; }
 
     @Override public boolean isMoving() { return movingLeft || movingRight; }
-    @Override public int getWidth() { return 140; }
-    @Override public int getHeight() { return 140; }
+    @Override public int getWidth() { return Constants.Player.WIDTH; }
+    @Override public int getHeight() { return Constants.Player.HEIGHT; }
     @Override public int getHealth() { return health; }
     @Override public boolean isAttacking() { return attacking || currentAction == Constants.PlayerActions.COMBO || currentAction == Constants.PlayerActions.AIR_ATTACK || currentAction == Constants.PlayerActions.SLIDE; }
     @Override public int getAttackDamage() {
         return switch (currentAction) {
-            case Constants.PlayerActions.COMBO -> (comboCount >= 3) ? 35 : ((comboCount == 2) ? 25 : 20);
-            case Constants.PlayerActions.AIR_ATTACK -> 30;
-            case Constants.PlayerActions.SLIDE -> 10;
-            default -> 5;
+            case Constants.PlayerActions.COMBO -> (comboCount >= 3) ? Constants.Player.COMBO_LVL3_DMG : ((comboCount == 2) ? Constants.Player.COMBO_LVL2_DMG : Constants.Player.COMBO_LVL1_DMG);
+            case Constants.PlayerActions.AIR_ATTACK -> Constants.Player.AIR_ATTACK_DMG;
+            case Constants.PlayerActions.SLIDE -> Constants.Player.SLIDE_DMG;
+            default -> Constants.Player.DEFAULT_DMG;
         };
     }
-    @Override public Rectangle getHitbox() { return new Rectangle((int)x + 30, (int)y + 20, getWidth() - 60, getHeight() - 40); }
+    @Override public Rectangle getHitbox() { 
+        return new Rectangle(
+            (int)x + Constants.Player.HITBOX_X_OFFSET, 
+            (int)y + Constants.Player.HITBOX_Y_OFFSET, 
+            getWidth() - Constants.Player.HITBOX_WIDTH_REDUCTION, 
+            getHeight() - Constants.Player.HITBOX_HEIGHT_REDUCTION
+        ); 
+    }
 
     private void drawHealthBar(Graphics g) {
         int barWidth = 150;
@@ -365,7 +372,7 @@ public class Player extends GameCharacter {
 
     private void drawFallbackPlayer(Graphics g) {
         g.setColor(Color.BLUE);
-        g.fillRect((int)x, (int)y, 140, 140);
+        g.fillRect((int)x, (int)y, getWidth(), getHeight());
         g.setColor(Color.WHITE);
         g.drawString("PLAYER", (int)x + 40, (int)y + 70);
         drawHealthBar(g);
