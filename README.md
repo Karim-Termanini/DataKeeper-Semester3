@@ -1,4 +1,5 @@
 # DATA KEEPER
+<img width="1792" height="991" alt="image" src="https://github.com/user-attachments/assets/b023a144-02fc-4ed8-b1d4-156f4dc2a538" />
 
 ## Überblick
 Ein 2D-Überlebens-Arena-Kampfspiel mit progressivem Levelsystem, mehreren Gegnertypen und dynamischen Kampfmechaniken.
