@@ -38,7 +38,6 @@ public class SoundManager {
         loadSound("attack", "/sounds/player/attack.wav");
         loadSound("hurt", "/sounds/player/hurt.wav");
         loadSound("jump", "/sounds/player/jump.wav");
-        loadSound("kill", "/sounds/player/kill.wav");
         loadSound("player_death", "/sounds/player/player-death.wav");
         loadSound("enemy_death", "/sounds/enemy/enemy-death.wav");
         loadSound("hit", "/sounds/enemy/hit.wav");
