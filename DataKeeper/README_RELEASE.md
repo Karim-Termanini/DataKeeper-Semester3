@@ -1,23 +1,31 @@
 # DATA KEEPER — Release Build
 
-## Ausführung (JAR)
-1. Erstellen Sie die Release-JAR
+## Ausführen (Endnutzer)
+- Voraussetzung: Java 8+ Laufzeit (JRE). „javac“ ist nicht nötig.
+- Ein-Klick Start:
+	- Windows: Doppelklick auf `dist/Run-DataKeeper.bat` (oder `Run-DataKeeper.vbs` ohne Konsole)
+	- Linux: Doppelklick auf `dist/Run-DataKeeper.sh` (Rechtsklick → Eigenschaften → „Als Programm ausführen“ bei Bedarf)
+	- macOS: Doppelklick auf `dist/DataKeeper.command` (evtl. Rechtsklick → Öffnen beim ersten Start)
+- بديل يدوي: `java -jar dist/DATA_KEEPER.jar`
 
+## Erstellen der JAR (nur für Entwickler)
 ```sh
 ./package.sh
 ```
 
-2. Führen Sie sie aus
+Die Ressourcen werden in die JAR eingebettet. Zur Laufzeit werden zunächst eingebettete Dateien genutzt; vorhandene Dateien unter `res/` (neben der JAR) können bevorzugt werden.
 
-```sh
-java -jar dist/DATA_KEEPER.jar
-```
+## JavaDoc ansehen
+Öffnen Sie `docs/javadoc/index.html`. Achten Sie darauf, den gesamten Ordner `docs/javadoc/` zusammen zu kopieren, damit CSS/JS korrekt geladen werden.
 
 ## Hinweise
-- Ressourcen sind in der JAR eingebettet; das Spiel sucht auch nach Dateien unter `res/` im Dateisystem, falls vorhanden.
-- Wenn Sie ein benutzerdefiniertes Boss-Hintergrundbild verwenden möchten, legen Sie es vor dem Packagieren unter `res/level4-Backgrounds/boss.png` ab.
-- Audio-Lautstärken können im Hauptmenü angepasst werden. Warnpiepser für Boss-Telegraphs sind absichtlich leiser.
+- Audio-Lautstärken können im Hauptmenü angepasst werden; Boss-Warnpiepser sind absichtlich leiser.
 
 ## Fehlerbehebung
-- Falls Audio auf einigen Linux-Systemen fehlschlägt (headless Audio-Treiber), wird das Spiel wo möglich auf synthetisierte SFX/Musik zurückgreifen.
-- Für bessere Performance schließen Sie andere rechenintensive Anwendungen während des Spielens.
+- Wenn `java` nicht gefunden wird: Java Runtime (JRE) installieren und den Befehl erneut ausführen.
+- Linux/macOS: Falls Doppelklick لا يعمل، أعطِ صلاحية تنفيذ للملف مرة واحدة:
+	```sh
+	chmod +x dist/Run-DataKeeper.sh
+	chmod +x dist/DataKeeper.command
+	```
+- إذا فتحت JavaDoc بدون تنسيقات: افتح `docs/javadoc/index.html` بعد نسخ كامل مجلّد `javadoc/` مع المجلدات الفرعية.

@@ -1,226 +1,101 @@
 # DATA KEEPER
 
+Dieses README spiegelt den aktuellen Stand des Projekts wider (vereinfachter Gegnertyp, Boss-Level, deutsche UI-Texte). Falls du Abweichungen siehst, sag Bescheid – ich passe es direkt an.
+
 ## Überblick
-Ein 2D-Überlebens-Arena-Kampfspiel mit progressivem Levelsystem, mehreren Gegnertypen und dynamischen Kampfmechaniken.
+Ein 2D-Überlebensspiel mit drei Standard-Levels und einem Boss-Level. Du überlebst bis der Timer abläuft; dann erscheint ein Portal zum Fortschritt. Gegner sind Nahkampf-„Glitches“ (ein einheitlicher Gegnertyp), im Boss-Level kämpfst du gegen einen Endgegner mit mehreren Angriffsmustern.
 
 ## Funktionen
 
 ### Kernspielprinzip
-- **Überlebensmodus**: Überlebe eine festgelegte Zeit während Wellen von Gegnern
-- **Progressives Levelsystem**: 3+ Level mit steigendem Schwierigkeitsgrad
-- **Mehrere Gegnertypen**:
-  - **Verfolger**: Schnelle Nahkampfangreifer, die den Spieler jagen
-  - **Schütze**: Fernkampfgegner, die Abstand halten und Projektilfeuer abgeben
-  - **Panzer**: Langsame Gegner mit hohen HP und schwerem Schaden
-- **Portalsystem**: Schließe den Timer ab, um ein Ausstiegsportal zu spawnen und zum nächsten Level zu gelangen
+- Überlebe die vorgegebene Zeit, während fortlaufend Gegner spawnen
+- Progression: Level 1–3 mit zunehmender Dichte, Level 4 als Bosskampf
+- Portalsystem: Nach Timerende erscheint ein Portal zum nächsten Level
 
 ### Spielerfähigkeiten
-- **Bewegung**: WASD-Steuerung mit flüssigen Animationen
-- **Springen**: Leertaste (Doppelsprung verfügbar)
-- **Ausweichen**: Umschalttaste für schnelles Ausweichen
-- **Rutschen**: S-Taste für Bewegung in niedriger Haltung mit Schaden
-- **Kombo-Angriffe**: E-Taste für Bodenkombos mit steigendem Schaden
-- **Luftangriff**: W-Taste für Luftkampf
-- **Kampfsystem**: Kombo-Multiplikatoren, Unverwundbarkeitsframes und strategische Positionierung
+- Bewegung: A/D, Sprinten mit SHIFT
+- Springen: SPACE
+- Rutschen: S (mit Schaden bei Kollision)
+- Angriff: E (Boden-Kombo), Spezialangriff in der Luft: W
+- Kampfsystem: Kombos, kurze Unverwundbarkeitsfenster, Positionsspiel
 
-### Level-Fortschritt
-- **Level 1**: 30 Sekunden, 5 Verfolger-Gegner
-- **Level 2**: 45 Sekunden, 8 Gegner (5 Verfolger + 3 Schützen)
-- **Level 3**: 60 Sekunden, 12 Gegner (5 Verfolger + 4 Schützen + 3 Panzer)
-- **Level 4+**: Dynamisch skalierter Schwierigkeitsgrad
+### Level-Fortschritt (aktuell im Code)
+- Level 1: 60 s, 12 Nahkampf-Gegner, Spawn-Intervall 3.0 s
+- Level 2: 75 s, 20 Nahkampf-Gegner, Spawn-Intervall 2.2 s
+- Level 3: 90 s, 26 Nahkampf-Gegner, Spawn-Intervall 1.8 s
+- Level 4: Boss-Level (telegraphierte Angriffe; Sieg blendet in Victory/Epilog über)
 
-### UI-Funktionen
-- Echtzeit-Gesundheitsleiste mit Farbindikatoren
-- Countdown-Timer mit visuellen Warnungen
-- Levelnummer und Gegnerzähler
-- Komboanzeige
-- Levelabschlussbildschirm mit Statistiken
-- Spielende-Bildschirm mit Neustart-Option
+### UI
+- HUD mit HP, Timer, Level, Gegnerzahl und Sitzungs-„Besiegt“-Zähler
+- Hauptmenü mit Start, Story-Overlay, Levelauswahl (1–4), Audio (SFX/Musik) und Beenden
+- Levelabschluss-, Spielende-, Sieg- und Epilog-Bildschirme
 
-## Steuerung
+## Steuerung (ingame angezeigt)
+- A/D: Bewegen
+- SPACE: Springen
+- E: Angriff / Portal betreten
+- W: Luftangriff
+- S: Rutschen
+- SHIFT: Sprinten/Dash
+- ESC: Zurück zum Menü
 
-### Bewegung
-- **A**: Nach links bewegen
-- **D**: Nach rechts bewegen
-- **Leertaste**: Springen (zweimal drücken für Doppelsprung)
-- **Umschalt**: Ausweichen
-- **S**: Rutschen
+## Build, Run, Package
 
-### Kampf
-- **E**: Angreifen / Portal betreten
-- **W**: Luftangriff (während des Sprungs)
+Für Entwicklung (lokal kompilieren und starten):
+- Linux/macOS: ./build_and_run.sh oder ./compile.sh && ./run.sh
+- Windows (CMD): build_and_run.bat oder compile.bat dann run.bat
 
-### Spielablauf
-- **Eingabe**: Zum nächsten Level fortfahren (auf Levelabschlussbildschirm)
-- **R**: Spiel neustarten (auf Spielende-Bildschirm)
+Für Release (Endnutzer, kein javac nötig):
+1) Erstelle die JAR: ./package.sh
+2) Starte: java -jar dist/DATA_KEEPER.jar
 
-## Kompilierung und Ausführung
+Wichtig: Endnutzer brauchen nur eine Java-Laufzeit (JRE). „javac“ ist NICHT nötig, solange die JAR verwendet wird. Schicke daher immer die Datei dist/DATA_KEEPER.jar (und ggf. README_RELEASE.md) – nicht die Sourcen.
 
-### Voraussetzungen
-- Java Development Kit (JDK) 8 oder höher
-- Terminal/Command Prompt Zugriff
+## JavaDoc
+- Generieren: ./javadoc.sh (UTF‑8, de)
+- Öffnen: docs/javadoc/index.html
+Hinweis: Bitte den gesamten Ordner docs/javadoc kopieren/öffnen, damit CSS/JS (Unterordner resource-files, script-files) gefunden werden. Einzelne HTML-Dateien direkt zu öffnen führt zu fehlendem Styling.
 
-### Kompilierung
-```bash
-cd DataKeeper
-javac -d out src/**/*.java
+## Projektstruktur (vereinfacht)
 ```
-
-### Ausführung
-```bash
-cd DataKeeper
-java -cp out:res main.Main
-```
-
-### Alternative: Verwendung einer IDE
-1. Öffnen Sie den `DataKeeper`-Ordner in Ihrer IDE (IntelliJ IDEA, Eclipse, etc.)
-2. Markieren Sie `src` als Quellverzeichnis
-3. Markieren Sie `res` als Ressourcenverzeichnis
-4. Führen Sie `main.Main` aus
-
-## JavaDoc generieren
-Sie können API-Dokumentation (JavaDoc) lokal generieren:
-
-Option A - Skript
-```bash
-./javadoc.sh
-```
-
-Option B - Direkter Befehl
-```bash
-javac -d docs/javadoc -sourcepath src \
--subpackages main:entities:levels:gameplay:ui:audio:utils:inputs \
--author -version
-```
-
-Die Ausgabe befindet sich in `docs/javadoc/index.html`.
-
-## Projektstruktur
-```
-PlatformerExpanded/
+DataKeeper/
 ├── src/
 │   ├── entities/
-│   │   ├── Character.java      # Interface für alle Charaktere
-│   │   ├── GameCharacter.java  # Abstrakte Basisklasse
-│   │   ├── Player.java         # Spielercharakter mit allen Fähigkeiten
-│   │   ├── Enemy.java          # Ursprünglicher Gegner (Legacy)
-│   │   ├── ChaserEnemy.java    # Schneller Nahkampfgegner
-│   │   ├── ShooterEnemy.java   # Fernkampf-Projektilgegner
-│   │   ├── TankEnemy.java      # Schwerer Panzergegner
-│   │   └── Projectile.java     # Projektil für Schützengegner
+│   │   ├── Enemy.java          # Einheitlicher Gegner (Nahkampf)
+│   │   ├── Boss.java           # Endgegner mit mehreren Angriffen
+│   │   ├── Player.java         # Spieler
+│   │   ├── GameCharacter.java  # Abstrakte Basis
+│   │   └── Character.java      # Interface
 │   ├── levels/
-│   │   ├── LevelConfig.java    # Level-Konfigurationsdaten
-│   │   ├── LevelManager.java   # Verwaltet Level-Fortschritt
-│   │   ├── Portal.java         # Ausstiegsportal für Levelabschluss
-│   │   └── SpawnManager.java   # Verwaltet Gegner-Spawning
-│   ├── gameplay/
-│   │   ├── GameState.java      # Spielzustands-Enumeration
-│   │   └── SurvivalTimer.java  # Countdown-Timer-System
-│   ├── ui/
-│   │   ├── HUD.java            # Heads-up-Display
-│   │   ├── LevelCompleteScreen.java # Siegesbildschirm
-│   │   └── GameOverScreen.java # Niederlagenbildschirm
-│   ├── inputs/
-│   │   ├── KeyboardInputs.java # Tastatureingabe-Handler
-│   │   └── MouseInputs.java    # Mauseingabe-Handler
-│   ├── main/
-│   │   ├── Main.java           # Einstiegspunkt
-│   │   ├── Game.java           # Spielschleife
-│   │   ├── GamePanel.java      # Hauptspielpanel mit Rendering
-│   │   └── GameWindow.java     # Fenstereinrichtung
-│   └── utils/
-│       └── AnimationManager.java # Animations-Utilities
+│   │   ├── LevelConfig.java    # Leveldaten (siehe Werte oben)
+│   │   ├── LevelManager.java   # Fortschritt & Timer/Portal
+│   │   └── SpawnManager.java   # Gegner-Spawning
+│   ├── gameplay/ (GameState, SurvivalTimer)
+│   ├── ui/       (HUD, Menüs, Overlays)
+│   ├── audio/    (SoundManager)
+│   ├── inputs/   (KeyboardInputs)
+│   └── main/     (Main, Game, GamePanel, GameWindow)
 └── res/
-    ├── Enemy/
-    │   └── glitsoul/           # Gegner-Sprite-Sheets
-    └── Fighter sprites/        # Spieler-Sprite-Sheets
+    ├── Enemy/glitsoul/...      # Gegner-Frames
+    ├── Fighter sprites/...     # Spieler-Frames
+    ├── backgrounds/...         # Level-Hintergründe
+    └── sounds/...              # Audio
 ```
 
-## Spielmechaniken
-
-### Überlebens-Timer
-- Jedes Level hat eine bestimmte Dauer
-- Timer zählt in Echtzeit herunter
-- Wenn der Timer 0 erreicht:
-  - Gegner-Spawning stoppt
-  - Alle verbleibenden Gegner verschwinden
-  - Ausstiegsportal erscheint in der Arenamitte
-
-### Gegner-Spawning
-- Gegner spawnen in Intervallen basierend auf Level-Konfiguration
-- Spawn-Positionen sind an Arena-Rändern zufällig
-- Spawning setzt sich fort bis Level-Gegnerlimit erreicht ist
-- Spawning stoppt wenn Timer abgeschlossen ist
-
-### Kampfsystem
-- **Kombo-System**: Kettenangriffe für erhöhten Schaden
-- **Unverwundbarkeitsframes**: Kurzer Schutz während bestimmter Aktionen
-- **Überspringen**: Über Gegner springen um Schaden zu vermeiden
-- **Rutschangriff**: Bewegung in niedriger Haltung mit Schaden
-- **Projektil-Ausweichen**: Schützengegner-Projektilen ausweichen
-
-### Gegner-KI
-- **Verfolger**: Direkte Verfolgung, Nahkampfangriffe in Reichweite
-- **Schützen**: Abstand halten, feuern Projektile auf Spieler
-- **Panzer**: Langsamer Vormarsch, schwerer Schaden, Schadensreduktion
+## Mechaniken (aktuell)
+- Überlebens-Timer pro Level; bei 0 s spawnt ein Portal (Mitte)
+- Spawning in Intervallen; Gegnerzahl steigt mit Level
+- Kombo/Schaden: echte Treffer erhöhen den Zähler; Musik wird bei Kampfhöhepunkt geduckt
+- Boss: Phasenwechsel bei 50% HP; Dash/Welle/Sprung; Telegraphie + Warnsound
 
 ## Anpassung
+- Levelwerte ändern: `levels/LevelConfig.java` (getLevel1/2/3 oder switch in getLevel)
+- Ressourcen austauschen: Bilder/Sounds unter `res/` ersetzen (Dateinamen beibehalten)
 
-### Neue Level hinzufügen
-Bearbeiten Sie `LevelConfig.java` um neue Level-Konfigurationen hinzuzufügen:
-```java
-public static LevelConfig getLevel4() {
-    return new LevelConfig(4, 75, 8, 6, 4, 3.5f);
-}
-```
+## Systemanforderungen
+- Java 8+ Laufzeit (JRE) zum Starten der JAR
+- Für Entwicklung/Build: JDK 8+ (javac), nur auf Entwicklerrechner nötig
 
-### Schwierigkeitsgrad anpassen
-Modifizieren Sie Werte in `LevelConfig.java`:
-- `duration`: Überlebenszeit in Sekunden
-- `chaserCount`, `shooterCount`, `tankCount`: Gegneranzahlen
-- `spawnInterval`: Zeit zwischen Gegner-Spawns
-
-### Gegner-Statistiken
-Anpassen in jeweiligen Gegnerklassen:
-- `health`: Gegner-Gesundheitspunkte
-- `speed`: Bewegungsgeschwindigkeit
-- `ATTACK_DAMAGE`: Dem Spieler zugefügter Schaden
-- `ATTACK_COOLDOWN_MAX`: Zeit zwischen Angriffen
-
-## Technische Details
-
-### Leistung
-- Ziel-FPS: 120
-- Auflösung: 1800x1000
-- Arena-Größe: 2000x1000
-
-### Kamerasystem
-- Sanfte Kamera folgt dem Spieler
-- An Arena-Grenzen gebunden
-- UI wird ohne Kameraversatz gerendert
-
-### Animationssystem
-- Frame-basierte Sprite-Animation
-- Variable Animationsgeschwindigkeiten pro Aktion
-- Automatisches Frame-Cycling und Abschlussbehandlung
-
-## Bekannte Funktionen
-- Kombosystem mit Schadensmultiplikatoren
-- Doppelsprung-Mechaniken
-- Visuelle Unterscheidung der Gegnertypen (Farbüberlagerungen)
-- Pulsierende Portal-Animation
-- Gesundheitsleiste mit Farbindikatoren
-- Timer-Farbwarnungen
-
-## Credits
-- Ursprüngliches Spielkonzept und Basis-Mechaniken
-- Erweitert mit Levelsystem, mehreren Gegnertypen und Überlebensmodus
-- Sprite-Assets vom Originalprojekt
-
-## Version
-**Erweiterte Edition v1.0**
-- Vollständiges Level-Fortschrittssystem
-- 3 Gegnertypen
-- Überlebens-Timer-Mechaniken
-- Portalsystem
-- Komplette UI-Überarbeitung
+## Lizenz/Credits
+- Sprites/Assets gemäß enthaltenen Readmes unter `res/`
+- Code & Spielmechanik: Projekt „DATA KEEPER“ (Uni-Abgabe)

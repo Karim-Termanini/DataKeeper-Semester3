@@ -1,0 +1,51 @@
+name: Build and Publish Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Make scripts executable
+        working-directory: DataKeeper
+        run: |
+          chmod +x package.sh || true
+          chmod +x release.sh || true
+          chmod +x javadoc.sh || true
+          chmod +x docs/package_javadoc.sh || true
+
+      - name: Build Release bundle (with JRE x64)
+        working-directory: DataKeeper
+        run: |
+          ./release.sh --with-jre-win --with-jre-linux --with-jre-mac
+          ls -la dist
+          ls -la dist/bundles || true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            DataKeeper/dist/*
+            DataKeeper/dist/bundles/*.zip
+          name: DATA KEEPER ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          body_path: DataKeeper/README_RELEASE.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
