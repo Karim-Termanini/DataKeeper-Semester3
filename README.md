@@ -2,7 +2,7 @@
 <img width="1792" height="991" alt="image" src="https://github.com/user-attachments/assets/b023a144-02fc-4ed8-b1d4-156f4dc2a538" />
 
 ## Überblick
-Ein 2D-Überlebens-Arena-Kampfspiel mit progressivem Levelsystem, mehreren Gegnertypen und dynamischen Kampfmechaniken.
+Ein 2D-Überlebens-Data Keeper-Kampfspiel mit progressivem Levelsystem, mehreren Gegnertypen und dynamischen Kampfmechaniken.
 
 ## Funktionen
 
@@ -98,43 +98,142 @@ Die Ausgabe befindet sich in `docs/javadoc/index.html`.
 
 ## Projektstruktur
 ```
-PlatformerExpanded/
-├── src/
-│   ├── entities/
-│   │   ├── Character.java      # Interface für alle Charaktere
-│   │   ├── GameCharacter.java  # Abstrakte Basisklasse
-│   │   ├── Player.java         # Spielercharakter mit allen Fähigkeiten
-│   │   ├── Enemy.java          # Ursprünglicher Gegner (Legacy)
-│   │   ├── ChaserEnemy.java    # Schneller Nahkampfgegner
-│   │   ├── ShooterEnemy.java   # Fernkampf-Projektilgegner
-│   │   ├── TankEnemy.java      # Schwerer Panzergegner
-│   │   └── Projectile.java     # Projektil für Schützengegner
-│   ├── levels/
-│   │   ├── LevelConfig.java    # Level-Konfigurationsdaten
-│   │   ├── LevelManager.java   # Verwaltet Level-Fortschritt
-│   │   ├── Portal.java         # Ausstiegsportal für Levelabschluss
-│   │   └── SpawnManager.java   # Verwaltet Gegner-Spawning
-│   ├── gameplay/
-│   │   ├── GameState.java      # Spielzustands-Enumeration
-│   │   └── SurvivalTimer.java  # Countdown-Timer-System
-│   ├── ui/
-│   │   ├── HUD.java            # Heads-up-Display
-│   │   ├── LevelCompleteScreen.java # Siegesbildschirm
-│   │   └── GameOverScreen.java # Niederlagenbildschirm
-│   ├── inputs/
-│   │   ├── KeyboardInputs.java # Tastatureingabe-Handler
-│   │   └── MouseInputs.java    # Mauseingabe-Handler
-│   ├── main/
-│   │   ├── Main.java           # Einstiegspunkt
-│   │   ├── Game.java           # Spielschleife
-│   │   ├── GamePanel.java      # Hauptspielpanel mit Rendering
-│   │   └── GameWindow.java     # Fenstereinrichtung
-│   └── utils/
-│       └── AnimationManager.java # Animations-Utilities
-└── res/
-    ├── Enemy/
-    │   └── glitsoul/           # Gegner-Sprite-Sheets
-    └── Fighter sprites/        # Spieler-Sprite-Sheets
+.
+├── bin
+│   ├── audio
+│   │   └── SoundManager.class
+│   ├── entities
+│   │   ├── Boss$AttackType.class
+│   │   ├── Boss.class
+│   │   ├── Character.class
+│   │   ├── Enemy.class
+│   │   ├── GameCharacter.class
+│   │   ├── Player.class
+│   │   └── Projectile.class
+│   ├── gameplay
+│   │   ├── GameState.class
+│   │   └── SurvivalTimer.class
+│   ├── inputs
+│   │   └── KeyboardInputs.class
+│   ├── levels
+│   │   ├── LevelConfig.class
+│   │   ├── LevelManager.class
+│   │   ├── Portal.class
+│   │   └── SpawnManager.class
+│   ├── main
+│   │   ├── Game.class
+│   │   ├── GamePanel$1.class
+│   │   ├── GamePanel$Spark.class
+│   │   ├── GamePanel.class
+│   │   ├── GameWindow.class
+│   │   └── Main.class
+│   ├── ui
+│   │   ├── EpilogueScreen.class
+│   │   ├── GameOverScreen.class
+│   │   ├── HUD.class
+│   │   ├── LevelBackgroundRenderer.class
+│   │   ├── LevelCompleteScreen.class
+│   │   ├── MainMenu.class
+│   │   └── VictoryScreen.class
+│   └── utils
+│       ├── AnimationManager.class
+│       ├── Constants$EnemyActions.class
+│       ├── Constants$Enemy.class
+│       ├── Constants$PlayerActions.class
+│       ├── Constants$Player.class
+│       ├── Constants.class
+│       ├── EnemyPool.class
+│       ├── ImageUtils.class
+│       ├── SaveManager$Settings.class
+│       └── SaveManager.class
+├── dist
+│   ├── DataKeeper.command
+│   ├── DataKeeper.desktop
+│   ├── DATA_KEEPER.jar
+│   ├── DATA_KEEPER_linux.tar.gz
+│   ├── DATA_KEEPER_release.zip
+│   ├── manifest.mf
+│   ├── README_RELEASE.md
+│   ├── Release_ALL.zip
+│   ├── Run-DataKeeper.bat
+│   ├── Run-DataKeeper.sh
+│   ├── Run-DataKeeper.vbs
+│   └── TEST.jar
+├── docs
+│   ├── ALGORITHMS.md
+│   ├── javadoc
+│   ├── JAVADOC.md
+├── out
+├── res
+│   ├── Enemy
+│   │   └── glitsoul
+│   │       ├── death
+│   │       ├── fight
+│   │       ├── hit
+│   │       ├── idle
+│   │       └── run
+│   ├── Fighter sprites
+│   │   ├── air_attack
+│   │   ├── combo
+│   │   ├── dash
+│   │   ├── death
+│   │   ├── hit
+│   │   ├── idle
+│   │   ├── jump
+│   │   ├── run
+│   │   └── slide
+│   ├── level1-Backgrounds
+│   ├── level2-Backgrounds
+│   ├── level3-Backgrounds
+│   └── sounds
+├── src
+│   ├── audio
+│   │   ├── package-info.java
+│   │   └── SoundManager.java
+│   ├── entities
+│   │   ├── Boss.java
+│   │   ├── Character.java
+│   │   ├── Enemy.java
+│   │   ├── GameCharacter.java
+│   │   ├── package-info.java
+│   │   └── Player.java
+│   ├── gameplay
+│   │   ├── GameState.java
+│   │   ├── package-info.java
+│   │   └── SurvivalTimer.java
+│   ├── inputs
+│   │   ├── KeyboardInputs.java
+│   │   ├── MouseInputs.java
+│   │   └── package-info.java
+│   ├── levels
+│   │   ├── LevelConfig.java
+│   │   ├── LevelManager.java
+│   │   ├── package-info.java
+│   │   ├── Portal.java
+│   │   └── SpawnManager.java
+│   ├── main
+│   │   ├── Game.java
+│   │   ├── GamePanel.java
+│   │   ├── GameWindow.java
+│   │   ├── Main.java
+│   │   └── package-info.java
+│   ├── ui
+│   │   ├── EpilogueScreen.java
+│   │   ├── GameOverScreen.java
+│   │   ├── HUD.java
+│   │   ├── LevelBackgroundRenderer.java
+│   │   ├── LevelCompleteScreen.java
+│   │   ├── MainMenu.java
+│   │   ├── package-info.java
+│   │   └── VictoryScreen.java
+│   └── utils
+│       ├── AnimationManager.java
+│       ├── Constants.java
+│       ├── EnemyPool.java
+│       ├── ImageUtils.java
+│       ├── package-info.java
+│       └── SaveManager.java
+└── stats.dat
 ```
 
 ## Spielmechaniken
