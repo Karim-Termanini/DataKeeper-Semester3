@@ -1,0 +1,221 @@
+@startuml ClassDiagram
+' Class diagram for DataKeeper (Application + GUI) - generated 2025-10-24
+' Render: use PlantUML or VS Code PlantUML extension
+
+skinparam packageStyle rectangle
+skinparam shadowing false
+hide empty members
+
+package "GUI" #LightSkyBlue {
+  package main {
+    class Main {
+      + main(String[]): void
+    }
+    class Game {
+      - gamePanel: GamePanel
+      + Game()
+      - startGameLoop(): void
+      + run(): void
+    }
+    class GameWindow
+    class GamePanel {
+      - player: entities.Player
+      - characters: List<entities.GameCharacter>
+      - enemies: List<entities.Enemy>
+      - levelManager: levels.LevelManager
+      + updateGame(): void
+      + handleKeyPressed(int): void
+      + handleKeyReleased(int): void
+      - startGameFromMenu(): void
+      - startLevelDirect(int): void
+    }
+  }
+  package inputs {
+    class KeyboardInputs
+  }
+  package ui {
+    class MainMenu
+    class HUD
+    class LevelBackgroundRenderer
+    class GameOverScreen
+    class LevelCompleteScreen
+    class VictoryScreen
+    class EpilogueScreen
+  }
+}
+
+package "Application / Control" #LightGoldenRodYellow {
+  package levels {
+    class SpawnManager {
+      - config: LevelConfig
+      - player: entities.Player
+      + update(): void
+      + stopSpawning(): void
+      + resumeSpawning(): void
+      + setActiveEnemyCount(int): void
+      + drainSpawnedEnemies(): List<entities.GameCharacter>
+    }
+    class LevelConfig {
+      - levelNumber: int
+      - duration: int
+      - spawnInterval: float
+      - bossLevel: boolean
+      + getLevel(int): LevelConfig
+      + isBossLevel(): boolean
+      + getDuration(): int
+      + getSpawnInterval(): float
+    }
+    class Portal {
+      + activate(): void
+      + update(): void
+      + checkPlayerCollision(entities.Player): boolean
+    }
+  }
+  package gameplay {
+    class SurvivalTimer {
+      + SurvivalTimer(int)
+      + start(): void
+      + update(): void
+      + isComplete(): boolean
+    }
+    enum GameState {
+      MAIN_MENU
+      PLAYING
+      LEVEL_COMPLETE
+      GAME_OVER
+      VICTORY
+      EPILOGUE
+    }
+  }
+}
+
+package "Facade" #White {
+  class LevelManager <<Singleton>> {
+    - instance: LevelManager
+    - currentLevelNumber: int
+    - currentConfig: LevelConfig
+    - timer: gameplay.SurvivalTimer
+    - spawnManager: levels.SpawnManager
+    - portal: levels.Portal
+    - player: entities.Player
+    - gameState: gameplay.GameState
+    + getInstance(): LevelManager
+    + initializeLevel(int, entities.Player): void
+    + startLevel(): void
+    + update(): void
+    + nextLevel(): void
+    + restartGame(): void
+    + setGameState(gameplay.GameState): void
+    + getSpawnManager(): SpawnManager
+    + getTimer(): gameplay.SurvivalTimer
+    + getCurrentConfig(): LevelConfig
+  }
+}
+
+package "Application / Entities" #PaleGreen {
+  package entities {
+    interface Character {
+      + update(): void
+      + render(java.awt.Graphics): void
+      + moveLeft(): void
+      + moveRight(): void
+      + jump(): void
+      + stop(): void
+      + getSpeed(): float
+      + attack(): void
+      + specialAttack(): void
+      + isAttacking(): boolean
+      + getAttackDamage(): int
+      + takeDamage(int): void
+      + loadAnimations(): void
+      + setAction(int): void
+      + updateAnimation(): void
+      + getCurrentFrame(): java.awt.image.BufferedImage
+      + isAlive(): boolean
+      + getHealth(): int
+      + getX(): int
+      + getY(): int
+      + setPosition(int,int): void
+      + getWidth(): int
+      + getHeight(): int
+    }
+    abstract class GameCharacter implements Character {
+      # x: float
+      # y: float
+      # facingRight: boolean
+      # isAlive: boolean
+      # attacking: boolean
+      # currentAction: int
+    }
+    class Player extends GameCharacter {
+      - health: int
+      + attack(): void
+      + specialAttack(): void
+      + jump(): void
+      + moveLeft(): void
+      + moveRight(): void
+      + stop(): void
+      + takeDamage(int): void
+      + getAttackHitbox(): java.awt.Rectangle
+    }
+    class Enemy extends GameCharacter {
+      - health: int
+      - attackCooldown: int
+      + attack(): void
+      + takeDamage(int): void
+      + followPlayer(): void
+    }
+    class Boss extends Enemy
+  }
+}
+
+package "Utilities & Audio" #WhiteSmoke {
+  package audio {
+    class SoundManager <<Singleton>> {
+      + getInstance(): SoundManager
+      + playSound(String): void
+      + playBackgroundMusic(): void
+      + playMenuMusic(): void
+      + playBossMusic(): void
+      + stopBackgroundMusic(): void
+      + stopBossMusic(): void
+      + stopMenuMusic(): void
+      + setCombatLayerActive(boolean): void
+    }
+  }
+  package utils {
+    class EnemyPool <<Singleton>>
+    class SaveManager
+    class Constants
+  }
+}
+
+' Relations (selected, high-level)
+Main --> Game
+Game *-- GamePanel
+GameWindow o-- GamePanel
+GamePanel --> MainMenu
+GamePanel --> HUD
+GamePanel --> LevelManager
+KeyboardInputs --> GamePanel
+
+LevelManager o--> LevelConfig
+LevelManager o--> SurvivalTimer
+LevelManager o--> SpawnManager
+LevelManager o--> Portal
+LevelManager --> GameState
+LevelManager --> Player
+SpawnManager --> Player
+SpawnManager ..> EnemyPool
+SpawnManager ..> Enemy
+Portal --> Player
+
+SoundManager ..> GamePanel
+MainMenu ..> SoundManager
+
+Player --|> GameCharacter
+Enemy --|> GameCharacter
+Boss --|> Enemy
+GameCharacter ..|> Character
+
+@enduml

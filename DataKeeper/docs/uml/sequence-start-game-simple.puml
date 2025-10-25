@@ -1,0 +1,26 @@
+@startuml SequenceStartGameSimple
+' Simplified sequence: Spieler startet Spiel من القائمة
+
+actor Spieler as Player
+participant MainMenu
+participant GamePanel
+participant LevelManager
+participant SurvivalTimer as Timer
+participant SpawnManager as Spawner
+
+Player -> MainMenu: ENTER (Start)
+MainMenu -> GamePanel: startGameFromMenu()
+activate GamePanel
+GamePanel -> LevelManager: setPlayer(player)
+GamePanel -> LevelManager: initializeLevel(1, player)
+GamePanel -> LevelManager: setGameState(PLAYING)
+GamePanel -> LevelManager: startLevel()
+activate LevelManager
+LevelManager -> Timer: start()
+LevelManager -> Spawner: resumeSpawning()
+LevelManager --> GamePanel: ok
+deactivate LevelManager
+GamePanel --> MainMenu: return
+deactivate GamePanel
+
+@enduml

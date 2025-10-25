@@ -1,0 +1,60 @@
+@startuml
+' Sequence diagram: Use case "Spiel starten" for DataKeeper — generated 2025-10-24
+' Player starts from MainMenu; GamePanel coordinates with LevelManager to start a level.
+
+actor Spieler as Player
+participant "ui.MainMenu" as MainMenu
+participant "main.GamePanel" as GamePanel
+participant "levels.LevelManager\n<<Singleton>>" as LevelMgr
+participant "gameplay.SurvivalTimer" as Timer
+participant "levels.SpawnManager" as Spawner
+participant "audio.SoundManager\n<<Singleton>>" as Audio
+
+== Menübedienung ==
+Player -> MainMenu: ENTER auf "SPIEL STARTEN"
+MainMenu -> GamePanel: startGameFromMenu()
+activate GamePanel
+
+== Spielinitialisierung ==
+GamePanel -> GamePanel: enemies.clear(), characters.clear()
+GamePanel -> GamePanel: player = new Player()
+GamePanel -> GamePanel: characters.add(player)
+GamePanel -> LevelMgr: setPlayer(player)
+GamePanel -> LevelMgr: restartGame()
+activate LevelMgr
+LevelMgr -> LevelMgr: currentLevelNumber = 1
+LevelMgr -> LevelMgr: initializeLevel(1, player)
+LevelMgr -> Timer: new SurvivalTimer(duration)
+LevelMgr -> Spawner: new SpawnManager(config, player)
+LevelMgr -> LevelMgr: portal = new Portal(...)
+LevelMgr --> GamePanel: «initialized»
+deactivate LevelMgr
+
+GamePanel -> LevelMgr: setGameState(PLAYING)
+GamePanel -> LevelMgr: startLevel()
+activate LevelMgr
+LevelMgr -> Timer: start()
+LevelMgr -> Spawner: resumeSpawning()
+LevelMgr --> GamePanel: «started»
+deactivate LevelMgr
+
+== Audio & HUD ==
+GamePanel -> Audio: stopMenuMusic()
+alt Boss-Level?
+  GamePanel -> Audio: playBossMusic()
+else
+  GamePanel -> Audio: playBackgroundMusic()
+end
+GamePanel -> GamePanel: hud = new HUD(player, timer, config, 1)
+GamePanel --> MainMenu: «return»
+deactivate GamePanel
+
+note over GamePanel,LevelMgr
+Fortlaufend (Game.run):
+  GamePanel.updateGame() ruft
+  - LevelMgr.update(),
+  - Spawner.update() (spawnt Gegner),
+  - Timer.update() auf.
+end note
+
+@enduml

@@ -1,0 +1,69 @@
+@startuml ClassDiagramSimple
+' Simplified class diagram (max ~10 classes) to cover the required concept
+skinparam packageStyle rectangle
+hide empty members
+
+package GUI #LightSkyBlue {
+  class GamePanel {
+    + updateGame(): void
+    + handleKeyPressed(int): void
+  }
+  class MainMenu
+  class KeyboardInputs
+}
+
+package Facade #White {
+  class LevelManager <<Singleton>> {
+    + initializeLevel(int, Player): void
+    + startLevel(): void
+    + setGameState(GameState): void
+    + getSpawnManager(): SpawnManager
+    + setPlayer(Player): void
+  }
+}
+
+package "Application / Control" #LightGoldenRodYellow {
+  class SpawnManager {
+    + update(): void
+    + setActiveEnemyCount(int): void
+    + resumeSpawning(): void
+  }
+  class LevelConfig
+  class SurvivalTimer {
+    + start(): void
+  }
+  enum GameState {
+    MAIN_MENU
+    PLAYING
+    LEVEL_COMPLETE
+    GAME_OVER
+    VICTORY
+    EPILOGUE
+  }
+}
+
+package Entities #PaleGreen {
+  class Player
+  class Enemy
+  class Portal
+}
+
+' Key relations (facade + control + entities + gui)
+KeyboardInputs --> GamePanel : key events
+GamePanel --> MainMenu
+GamePanel --> LevelManager
+GamePanel --> Player
+LevelManager o--> LevelConfig
+LevelManager o--> SurvivalTimer
+LevelManager o--> SpawnManager
+LevelManager o--> Portal
+LevelManager --> Player
+SpawnManager ..> Enemy : spawns
+Portal --> Player : check collision
+
+note right of LevelManager
+Facade layer between GUI and application logic.
+Singleton used for central game coordination.
+end note
+
+@enduml
