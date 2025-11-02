@@ -1,36 +1,57 @@
-@startuml ClassDiagramSimple
-' Simplified class diagram (max ~10 classes) to cover the required concept
+@startuml
+' Layered class diagram with explicit Facade between GUI and Application/Control
 skinparam packageStyle rectangle
 hide empty members
 
 package GUI #LightSkyBlue {
-  class GamePanel {
-    + updateGame(): void
-    + handleKeyPressed(int): void
-  }
+  class GameWindow
   class MainMenu
   class KeyboardInputs
 }
 
 package Facade #White {
-  class LevelManager <<Singleton>> {
-    + initializeLevel(int, Player): void
-    + startLevel(): void
-    + setGameState(GameState): void
-    + getSpawnManager(): SpawnManager
-    + setPlayer(Player): void
+  class Game <<facade>> {
+    + Game()
+    + run(): void
+    .. creates ..
+    - gamePanel: GamePanel
+    - gameWindow: GameWindow
   }
 }
 
 package "Application / Control" #LightGoldenRodYellow {
+  class GamePanel {
+    + updateGame(): void
+    + handleKeyPressed(int): void
+    + handleKeyReleased(int): void
+  }
+  class LevelManager <<Singleton>> {
+    + initializeLevel(int, Player): void
+    + startLevel(): void
+    + setGameState(GameState): void
+    + getGameState(): GameState
+    + update(): void
+    + getSpawnManager(): SpawnManager
+    + getCurrentConfig(): LevelConfig
+    + getTimer(): SurvivalTimer
+    + setPlayer(Player): void
+  }
   class SpawnManager {
     + update(): void
     + setActiveEnemyCount(int): void
     + resumeSpawning(): void
+    + stopSpawning(): void
+    + drainSpawnedEnemies(): List<GameCharacter>
   }
-  class LevelConfig
+  class LevelConfig {
+    + getDuration(): int
+    + getSpawnInterval(): float
+    + isBossLevel(): boolean
+    + getLevel(int): LevelConfig
+  }
   class SurvivalTimer {
     + start(): void
+    + update(): void
   }
   enum GameState {
     MAIN_MENU
@@ -43,27 +64,51 @@ package "Application / Control" #LightGoldenRodYellow {
 }
 
 package Entities #PaleGreen {
-  class Player
-  class Enemy
-  class Portal
+  class Player{
+    + health: int
+    + speed: int
+    + loadAnimationFrames(String, int): BufferedImage[]
+  }
+
+  class Enemy{
+    + health: int
+    + speed: int
+    + loadAnimationFrames(String, int): BufferedImage[]
+  }
+  class Portal{
+    + active: boolean
+    + width: int
+    + height: int
+    + activate(): void
+    + checkPlayerCollision(Player): boolean
+  }
 }
 
 ' Key relations (facade + control + entities + gui)
 KeyboardInputs --> GamePanel : key events
-GamePanel --> MainMenu
-GamePanel --> LevelManager
-GamePanel --> Player
-LevelManager o--> LevelConfig
-LevelManager o--> SurvivalTimer
-LevelManager o--> SpawnManager
-LevelManager o--> Portal
-LevelManager --> Player
+MainMenu <.. GamePanel : reads selection
+Game *-- GamePanel : creates/owns
+Game *-- GameWindow : creates/owns
+Game --> GamePanel : run() -> updateGame()
+GamePanel --> LevelManager : uses
+LevelManager o-- LevelConfig
+LevelManager o-- SurvivalTimer
+LevelManager o-- SpawnManager
+LevelManager o-- Portal
+LevelManager --> Player : setPlayer()
+GamePanel --> Player : update/render
 SpawnManager ..> Enemy : spawns
 Portal --> Player : check collision
 
-note right of LevelManager
-Facade layer between GUI and application logic.
-Singleton used for central game coordination.
+note right of Game
+Acts as Facade: bridges GUI (window)
+and Control (panel/manager),
+drives the game loop.
 end note
 
+note right of LevelManager
+Central coordinator (Singleton):
+holds level config, timer, spawner,
+portal and game state.
+end note
 @enduml

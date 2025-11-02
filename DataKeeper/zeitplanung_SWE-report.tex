@@ -1,0 +1,159 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[main=ngerman,provide=*]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{titlesec}
+\usepackage{titling}
+% \usepackage{lmodern} % optional; not required
+\usepackage{xcolor}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue}
+
+% Title page is constructed manually to ensure consistent layout
+\newcommand{\locationdate}{Hannover, 31. Oktober 2025}
+
+\begin{document}
+\begin{titlepage}
+\centering
+{\LARGE Zeitplanung\par}
+\vspace{0.2cm}
+{\large Programmierprojekt (DarkIT)\par}
+\vspace{2.2cm}
+{\LARGE DataKeeper\par}
+\vspace{0.2cm}
+{\normalsize Ein 2D-Survival-Spiel mit 3 Levels und Bosskampf\par}
+\vspace{2.0cm}
+\begin{tabular}{rl}
+Student: & Abdulkarim Bashir Termanini \\
+Matrikelnummer: & 1813326 \\
+Team: & 6 Personen \\
+Studiengang: & Angewandte Informatik \\
+Fakultät: & Fakultät IV - Wirtschaft und Informatik \\
+Hochschule: & Hochschule Hannover \\
+\end{tabular}
+\vfill
+\locationdate
+\end{titlepage}
+\tableofcontents
+\newpage
+
+\section{Projektübersicht}
+\subsection{Projektziele}
+DataKeeper ist ein Java-basiertes 2D-Survival-Spiel. Ziel ist es, den Spieler durch drei Standard-Levels bis zu einem Boss-Level zu führen. Der Fokus liegt auf flüssigem Gameplay (60 FPS), klarer Progression, guter Spielbalance und stabilen Builds (JAR-Release).
+
+\subsection{Projektumfang}
+\begin{itemize}
+  \item Gameplay: Überlebe bis Timerende; Gegner-Spawning, Portal zum Fortschritt
+  \item Level-System: 3 Levels + Boss-Level, steigende Schwierigkeit
+  \item Kampf: Boden- und Luftangriffe, Slide/Dash, kurze iFrames
+  \item UI/UX: HUD, Hauptmenü, Levelabschluss-, Sieg- und GameOver-Screens
+  \item Audio: Hintergrundmusik (Menu/Level/Boss), SFX, Combat-Layer
+  \item Persistenz: SaveManager für Sitzungsstatistiken
+\end{itemize}
+
+\subsection{Technologie-Stack}
+\begin{itemize}
+  \item Programmiersprache: Java 17+
+  \item GUI-Framework: Swing
+  \item Build/Run: Shell-Skripte, JAR Packaging
+  \item Versionskontrolle: Git/GitHub
+  \item UML/Docs: PlantUML, Javadoc
+\end{itemize}
+
+\subsection{Zeitrahmen}
+12 Wochen (ca. 3 Monate).
+
+\section{Schritte zur Erstellung des Zeitplans}
+\subsection{1. Projektziele definieren}
+Ziele und Anforderungen wurden für Gameplay, Levelprogression, UI und Audio festgelegt.
+\subsection{2. Aufgaben identifizieren}
+Aufgaben in Phasen gegliedert: Initiierung, Analyse, Design, Implementierung (3 Phasen), Testing/Optimierung, Dokumentation, Abschluss.
+\subsection{3. Aufgaben priorisieren}
+Design vor Implementierung; Kernfunktionen vor Nice-to-Haves; Testing parallel; Dokumentation kontinuierlich.
+\subsection{4. Ressourcen zuweisen}
+Team (6 Personen) mit Rollen: Gameplay, Entities, Level, UI/UX, Audio, Projektleitung.
+\subsection{5. Zeitaufwand schätzen}
+Eine Woche pro Phase; Pufferzeit pro Woche ca. 10\%.
+\subsection{6. Meilensteine festlegen}
+Meilensteine decken die Pflichttermine (20.10, 27.10, 31.10, 19.12) sowie wöchentliche Ziele ab.
+
+\section{Detaillierter Zeitplan}
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}p{0.8cm}p{3.2cm}p{8.3cm}p{2.2cm}@{}}
+\toprule
+\textbf{Woche} & \textbf{Aktivität} & \textbf{Aufgaben} & \textbf{Verantwortlich} \\
+\midrule
+1 & Projektinitiierung & Kick-off, Ziele fixieren; Technologien auswählen; Repository/Build-Skripte anlegen & Projektleitung \\
+2 & Anforderungsanalyse & Use-Case-Recherche, Spielregeln und Progression definieren; GUI-Entwürfe skizzieren & Gameplay, UI \\
+3 & Anwendungsfälle definieren & Use-Case-Diagramme; Szenarien: Kämpfen, Spawning, Portal; UI-Flows & Gameplay, UI \\
+4 & Klassenmodell entwerfen & Klassendiagramm (Player, Enemy, Boss, LevelManager, SpawnManager, HUD, SoundManager, Portal) & Entities, Level \\
+5 & Architekturentwurf & Package-Struktur, Game-Loop, Event-Flows; Asset-Pfade; Audio-Konzept & Projektleitung, Audio \\
+6 & Implementierung (Phase 1) & GameCharacter/Player/Constants; GamePanel Grundgerüst; Input-System & Gameplay, Projektleitung \\
+7 & Implementierung (Phase 2) & Enemy, SpawnManager, LevelManager; HUD, Hauptmenü, Game States & Entities, Level, UI \\
+8 & Implementierung (Phase 3) & Boss-Klasse, Portalfluss, LevelConfig; AnimationManager; SoundManager & Entities, Level, Audio \\
+9 & Sound \& UI Polish & Musik/SFX, Combat-Layer; UI-Finishing, Hintergründe; kleine Effekte & Audio, UI \\
+10 & Testing \& Bugfixing & Unit-/Integrationstests; Performance-Optimierung; Speicherlecks prüfen & Alle \\
+11 & Dokumentation & Javadoc, README, UML finalisieren; Nutzerhinweise & Alle \\
+12 & Projektabschluss & JAR erstellen; finaler Test; Abgabe und Präsentationsvorbereitung & Projektleitung \\
+\bottomrule
+\end{longtable}
+
+\section{Benötigte Ressourcen}
+\subsection{Software-Ressourcen}
+IntelliJ/VS Code, Java 17+, Git/GitHub, PlantUML, Image/Sound Tools, JDK/JRE.
+\subsection{Fachliche Ressourcen}
+Java/Swing, OOP, Basis Audio (JavaSound), 2D-Animation/Sprites, einfache KI/Physik.
+\subsection{Materialien}
+Sprites (Player/Enemy/Boss), Hintergründe, Audio-Dateien, UI-Icons.
+
+\section{Risikomanagement}
+\subsection{Kurz und verständlich (Stand: 29.10.2025)}
+Wir halten die Risiken bewusst einfach. Zu jedem Risiko steht kurz, was passieren kann und was wir konkret tun.
+\begin{itemize}
+  \item \textbf{Boss zu schwer oder buggy} — Auswirkung: Spielspaß leidet, Zeitverzug. Maßnahme: Mit einfachen Mustern starten, jede Änderung testen, notfalls Muster vereinfachen.
+  \item \textbf{Leistung (FPS) fällt} — Auswirkung: Ruckeln. Maßnahme: Gegneranzahl begrenzen, leichte Effekte nutzen, früh testen und nachbessern.
+  \item \textbf{Zeitplan rutscht} — Auswirkung: Manche Features fehlen. Maßnahme: An MVP festhalten, Extras verschieben, wöchentliche Puffer nutzen.
+  \item \textbf{Merge-/Integrationskonflikte} — Auswirkung: Build bricht. Maßnahme: Kleine Änderungen, täglich mergen, Feature-Flags nutzen.
+  \item \textbf{Assets/Lizenzen unklar} — Auswirkung: Austausch nötig. Maßnahme: Nur eigene oder frei nutzbare (z. B. CC0) verwenden, Quellen dokumentieren.
+  \item \textbf{Kein Sound im Release} — Auswirkung: Spiel wirkt leer. Maßnahme: Ressourcenpfade im JAR testen, einheitliches Laden der Dateien.
+  \item \textbf{Speicherverbrauch steigt} — Auswirkung: Lags oder Absturz. Maßnahme: Ressourcen freigeben, wiederverwenden (Pooling), einfache Leak-Checks.
+  \item \textbf{Träge Eingaben} — Auswirkung: Schlechte Steuerung. Maßnahme: Eingaben vom Rendern trennen, kurze Tests mit Spielern.
+\end{itemize}
+
+\subsection{Puffer und Eskalation}
+Wöchentliche Kontrolle: Wenn ein Risiko auftritt, vereinfachen wir sofort auf MVP und priorisieren Stabilität.
+
+\section{Meilensteine und Erfolgskriterien}
+\subsection{Haupt-Meilensteine (Status Stand: 29.10.2025)}
+\begin{itemize}
+  \item \textbf{20.10: Analyse + GUI-Design} — \textcolor{green}{erledigt}
+  \item \textbf{27.10: Klassenmodell} — \textcolor{green}{erledigt}
+  \item \textbf{31.10: Zeitplanung} — \textcolor{orange}{in Arbeit} (Abnahme ausstehend)
+  \item \textbf{19.12: Implementierung/Tests} — \textcolor{blue}{geplant}
+\end{itemize}
+
+\subsection{Erfolgskriterien (Zielzustand, noch nicht erfüllt)}
+Das Projekt gilt als erfolgreich, wenn die folgenden Ziele erreicht sind. Hinweis: zum Stichtag 29.10.2025 sind diese \emph{geplant}, nicht abgeschlossen.
+\begin{itemize}
+  \item Spiel läuft stabil bei angestrebten 60 FPS auf Standard-Hardware — \textit{geplant}
+  \item 4 spielbare Level (3 + Boss) inkl. Portalsystem — \textit{geplant}
+  \item Audio vollständig integriert (Musik, SFX, Combat-Layer) — \textit{geplant}
+  \item JAR-Release lauffähig (Assets via getResource) — \textit{geplant}
+  \item Vollständige Dokumentation (Javadoc, README, UML) — \textit{geplant}
+  \item Termingerechte Abgabe — \textit{geplant}
+\end{itemize}
+
+\section{Überwachung und Berichtsmethoden}
+Wöchentliche Fortschrittskontrolle, Git-Commits mit sinnvollen Messages, Issue-Board; Anpassungen bei technischen Risiken; MVP-Ansatz bei Abweichungen.
+
+\section{Fazit}
+Der Plan bietet eine klare Struktur bis zum 19. Dezember. Mit MVP-Fokus, regelmäßiger Integration und gezielter Optimierung ist eine termingerechte Abgabe realistisch.
+
+\end{document}

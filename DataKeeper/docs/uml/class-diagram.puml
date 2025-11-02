@@ -1,6 +1,5 @@
 @startuml ClassDiagram
-' Class diagram for DataKeeper (Application + GUI) - generated 2025-10-24
-' Render: use PlantUML or VS Code PlantUML extension
+' Class diagram for DataKeeper (Layered: GUI, Facade, Application/Control, Entities) - updated 2025-10-29
 
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -11,24 +10,7 @@ package "GUI" #LightSkyBlue {
     class Main {
       + main(String[]): void
     }
-    class Game {
-      - gamePanel: GamePanel
-      + Game()
-      - startGameLoop(): void
-      + run(): void
-    }
     class GameWindow
-    class GamePanel {
-      - player: entities.Player
-      - characters: List<entities.GameCharacter>
-      - enemies: List<entities.Enemy>
-      - levelManager: levels.LevelManager
-      + updateGame(): void
-      + handleKeyPressed(int): void
-      + handleKeyReleased(int): void
-      - startGameFromMenu(): void
-      - startLevelDirect(int): void
-    }
   }
   package inputs {
     class KeyboardInputs
@@ -44,8 +26,53 @@ package "GUI" #LightSkyBlue {
   }
 }
 
+package "Facade" #White {
+  class Game <<facade>> {
+    - gamePanel: main.GamePanel
+    - gameWindow: main.GameWindow
+    + Game()
+    - startGameLoop(): void
+    + run(): void
+  }
+}
+
 package "Application / Control" #LightGoldenRodYellow {
+  package main {
+    class GamePanel {
+      - player: entities.Player
+      - characters: List<entities.GameCharacter>
+      - enemies: List<entities.Enemy>
+      - levelManager: levels.LevelManager
+      + updateGame(): void
+      + handleKeyPressed(int): void
+      + handleKeyReleased(int): void
+      - startGameFromMenu(): void
+      - startLevelDirect(int): void
+    }
+  }
   package levels {
+    class LevelManager <<Singleton>> {
+      - instance: LevelManager
+      - currentLevelNumber: int
+      - currentConfig: LevelConfig
+      - timer: gameplay.SurvivalTimer
+      - spawnManager: levels.SpawnManager
+      - portal: levels.Portal
+      - player: entities.Player
+      - gameState: gameplay.GameState
+      + getInstance(): LevelManager
+      + initializeLevel(int, entities.Player): void
+      + startLevel(): void
+      + update(): void
+      + nextLevel(): void
+      + restartGame(): void
+      + setGameState(gameplay.GameState): void
+      + getGameState(): gameplay.GameState
+      + setPlayer(entities.Player): void
+      + getSpawnManager(): SpawnManager
+      + getTimer(): gameplay.SurvivalTimer
+      + getCurrentConfig(): LevelConfig
+    }
     class SpawnManager {
       - config: LevelConfig
       - player: entities.Player
@@ -86,29 +113,6 @@ package "Application / Control" #LightGoldenRodYellow {
       VICTORY
       EPILOGUE
     }
-  }
-}
-
-package "Facade" #White {
-  class LevelManager <<Singleton>> {
-    - instance: LevelManager
-    - currentLevelNumber: int
-    - currentConfig: LevelConfig
-    - timer: gameplay.SurvivalTimer
-    - spawnManager: levels.SpawnManager
-    - portal: levels.Portal
-    - player: entities.Player
-    - gameState: gameplay.GameState
-    + getInstance(): LevelManager
-    + initializeLevel(int, entities.Player): void
-    + startLevel(): void
-    + update(): void
-    + nextLevel(): void
-    + restartGame(): void
-    + setGameState(gameplay.GameState): void
-    + getSpawnManager(): SpawnManager
-    + getTimer(): gameplay.SurvivalTimer
-    + getCurrentConfig(): LevelConfig
   }
 }
 
@@ -192,30 +196,32 @@ package "Utilities & Audio" #WhiteSmoke {
 
 ' Relations (selected, high-level)
 Main --> Game
-Game *-- GamePanel
-GameWindow o-- GamePanel
-GamePanel --> MainMenu
-GamePanel --> HUD
-GamePanel --> LevelManager
-KeyboardInputs --> GamePanel
+Game *-- main.GamePanel
+Game *-- main.GameWindow
+main.GameWindow o-- main.GamePanel
+main.GamePanel --> ui.MainMenu
+main.GamePanel --> ui.HUD
+main.GamePanel --> levels.LevelManager
+inputs.KeyboardInputs --> main.GamePanel
 
-LevelManager o--> LevelConfig
-LevelManager o--> SurvivalTimer
-LevelManager o--> SpawnManager
-LevelManager o--> Portal
-LevelManager --> GameState
-LevelManager --> Player
-SpawnManager --> Player
-SpawnManager ..> EnemyPool
-SpawnManager ..> Enemy
-Portal --> Player
+levels.LevelManager o--> levels.LevelConfig
+levels.LevelManager o--> gameplay.SurvivalTimer
+levels.LevelManager o--> levels.SpawnManager
+levels.LevelManager o--> levels.Portal
+levels.LevelManager --> gameplay.GameState
+levels.LevelManager --> entities.Player
+levels.SpawnManager --> entities.Player
+levels.SpawnManager ..> utils.EnemyPool
+levels.SpawnManager ..> entities.Enemy
+levels.SpawnManager ..> entities.Boss
+levels.Portal --> entities.Player
 
-SoundManager ..> GamePanel
-MainMenu ..> SoundManager
+audio.SoundManager ..> main.GamePanel
+ui.MainMenu ..> audio.SoundManager
 
-Player --|> GameCharacter
-Enemy --|> GameCharacter
-Boss --|> Enemy
-GameCharacter ..|> Character
+entities.Player --|> entities.GameCharacter
+entities.Enemy --|> entities.GameCharacter
+entities.Boss --|> entities.Enemy
+entities.GameCharacter ..|> entities.Character
 
 @enduml

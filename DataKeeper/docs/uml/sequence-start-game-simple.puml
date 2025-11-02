@@ -1,26 +1,65 @@
-@startuml SequenceStartGameSimple
-' Simplified sequence: Spieler startet Spiel من القائمة
+@startuml
+' Vereinfachtes Sequenzdiagramm: alle Klassen aus dem Klassendiagramm, ohne Boss, mit deutschen Abschnitten
 
-actor Spieler as Player
+actor Benutzer as User
+participant KeyboardInputs as Inputs
 participant MainMenu
-participant GamePanel
-participant LevelManager
+participant GamePanel as Panel
+participant GameWindow as Fenster
+participant Game <<facade>>
+participant LevelManager as Manager
+participant LevelConfig as Config
+participant gameplay.GameState as Zustand
 participant SurvivalTimer as Timer
 participant SpawnManager as Spawner
+participant Player
+participant Enemy
+participant Portal
 
-Player -> MainMenu: ENTER (Start)
-MainMenu -> GamePanel: startGameFromMenu()
-activate GamePanel
-GamePanel -> LevelManager: setPlayer(player)
-GamePanel -> LevelManager: initializeLevel(1, player)
-GamePanel -> LevelManager: setGameState(PLAYING)
-GamePanel -> LevelManager: startLevel()
-activate LevelManager
-LevelManager -> Timer: start()
-LevelManager -> Spawner: resumeSpawning()
-LevelManager --> GamePanel: ok
-deactivate LevelManager
-GamePanel --> MainMenu: return
-deactivate GamePanel
+== App-Start (Fassade) ==
+User -> Game: Programm starten
+activate Game
+Game -> Panel: new GamePanel()
+Game -> Fenster: new GameWindow(Panel)
+loop Spielschleife
+	Game -> Panel: updateGame()
+end
+deactivate Game
+
+== Start aus dem Hauptmenü ==
+User -> Inputs: ENTER
+Inputs -> Panel: handleKeyPressed(ENTER)
+Panel -> MainMenu: isStartSelected()
+MainMenu --> Panel: ja
+Panel -> Panel: startGameFromMenu()
+Panel -> Manager: setPlayer(player)
+Panel -> Manager: restartGame()
+Panel -> Manager: setGameState(PLAYING)
+Panel -> Manager: startLevel()
+Manager -> Timer: start()
+Manager -> Spawner: resumeSpawning()
+Manager -> Config: getDuration()/getSpawnInterval()/isBossLevel()
+
+== Laufzeit (PLAYING) ==
+Panel -> Player: update()
+Panel -> Spawner: setActiveEnemyCount(enemies.size)
+Panel -> Manager: update()
+Manager -> Timer: update()
+Manager -> Spawner: update()
+Manager -> Portal: update()
+Panel -> Spawner: drainSpawnedEnemies()
+Spawner --> Panel: Enemy*
+Panel -> Enemy: update() [für jeden]
+Portal -> Player: checkPlayerCollision(player)
+
+== Mögliche Zustandswechsel ==
+note over Zustand
+Mögliche Werte: MAIN_MENU, PLAYING,
+LEVEL_COMPLETE, GAME_OVER,
+VICTORY, EPILOGUE
+end note
+Panel -> Manager: setGameState(GAME_OVER) [wenn Spieler tot]
+Manager -> Portal: activate() [wenn Timer komplett]
+Panel -> Manager: setGameState(LEVEL_COMPLETE) [bei Portal + E]
 
 @enduml

@@ -1,60 +1,108 @@
 @startuml
-' Sequence diagram: Use case "Spiel starten" for DataKeeper — generated 2025-10-24
-' Player starts from MainMenu; GamePanel coordinates with LevelManager to start a level.
+' Sequence: Spiel starten + Laufzeit mit Facade, GameState und LevelConfig
 
-actor Spieler as Player
+actor Benutzer as User
+participant "main.Game" as Game <<facade>>
+participant "main.GameWindow" as Fenster
+participant "main.GamePanel" as Panel
+participant "inputs.KeyboardInputs" as Inputs
 participant "ui.MainMenu" as MainMenu
-participant "main.GamePanel" as GamePanel
 participant "levels.LevelManager\n<<Singleton>>" as LevelMgr
+participant "gameplay.GameState" as State
 participant "gameplay.SurvivalTimer" as Timer
 participant "levels.SpawnManager" as Spawner
+participant "levels.LevelConfig" as Config
+participant "entities.Player" as Player
+participant "entities.Enemy" as Enemy
+participant "levels.Portal" as Portal
 participant "audio.SoundManager\n<<Singleton>>" as Audio
 
+== App-Start (Facade) ==
+User -> Game: Programm starten
+activate Game
+Game -> Panel: new GamePanel()
+Game -> Fenster: new GameWindow(Panel)
+loop Game-Loop
+  Game -> Panel: updateGame()
+end
+deactivate Game
+
 == Menübedienung ==
-Player -> MainMenu: ENTER auf "SPIEL STARTEN"
-MainMenu -> GamePanel: startGameFromMenu()
-activate GamePanel
+User -> Inputs: ENTER auf "SPIEL STARTEN"
+Inputs -> Panel: handleKeyPressed(VK_ENTER)
+Panel -> MainMenu: isStartSelected()
+MainMenu --> Panel: ja
+Panel -> Panel: startGameFromMenu()
+activate Panel
 
 == Spielinitialisierung ==
-GamePanel -> GamePanel: enemies.clear(), characters.clear()
-GamePanel -> GamePanel: player = new Player()
-GamePanel -> GamePanel: characters.add(player)
-GamePanel -> LevelMgr: setPlayer(player)
-GamePanel -> LevelMgr: restartGame()
+Panel -> Panel: enemies/characters reset
+Panel -> Panel: player = new Player()
+Panel -> LevelMgr: setPlayer(player)
+Panel -> LevelMgr: restartGame()
 activate LevelMgr
 LevelMgr -> LevelMgr: currentLevelNumber = 1
 LevelMgr -> LevelMgr: initializeLevel(1, player)
+LevelMgr -> Config: getDuration()/getSpawnInterval()/isBossLevel()
 LevelMgr -> Timer: new SurvivalTimer(duration)
 LevelMgr -> Spawner: new SpawnManager(config, player)
-LevelMgr -> LevelMgr: portal = new Portal(...)
-LevelMgr --> GamePanel: «initialized»
+LevelMgr -> LevelMgr: portal = new Portal(x,y)
+LevelMgr --> Panel: «initialized» (getCurrentConfig)
 deactivate LevelMgr
 
-GamePanel -> LevelMgr: setGameState(PLAYING)
-GamePanel -> LevelMgr: startLevel()
+Panel -> LevelMgr: setGameState(PLAYING)
+Panel -> LevelMgr: startLevel()
 activate LevelMgr
 LevelMgr -> Timer: start()
 LevelMgr -> Spawner: resumeSpawning()
-LevelMgr --> GamePanel: «started»
+LevelMgr --> Panel: «started»
 deactivate LevelMgr
 
 == Audio & HUD ==
-GamePanel -> Audio: stopMenuMusic()
+Panel -> Audio: stopMenuMusic()
 alt Boss-Level?
-  GamePanel -> Audio: playBossMusic()
+  Panel -> Audio: playBossMusic()
 else
-  GamePanel -> Audio: playBackgroundMusic()
+  Panel -> Audio: playBackgroundMusic()
 end
-GamePanel -> GamePanel: hud = new HUD(player, timer, config, 1)
-GamePanel --> MainMenu: «return»
-deactivate GamePanel
+Panel -> Panel: hud = new HUD(player, timer, config, 1)
+Panel --> MainMenu: «return»
+deactivate Panel
 
-note over GamePanel,LevelMgr
-Fortlaufend (Game.run):
-  GamePanel.updateGame() ruft
-  - LevelMgr.update(),
-  - Spawner.update() (spawnt Gegner),
-  - Timer.update() auf.
-end note
+== Laufzeit (PLAYING) ==
+Panel -> LevelMgr: getGameState()
+LevelMgr --> Panel: State.PLAYING
+activate Panel
+Panel -> Player: update()
+Panel -> Spawner: setActiveEnemyCount(enemies.size)
+Panel -> LevelMgr: update()
+activate LevelMgr
+LevelMgr -> Timer: update()
+LevelMgr -> Spawner: update()
+LevelMgr -> Portal: update()
+deactivate LevelMgr
+Panel -> Spawner: drainSpawnedEnemies()
+Spawner --> Panel: Enemy*
+Panel -> Enemy: update() [für jeden]
+Portal -> Player: checkPlayerCollision(player)
+
+alt Boss-Level
+  Spawner -> "entities.Boss" as Boss: spawn (einmal)
+else Normal-Level
+  Spawner -> Enemy: spawn (bis Limit)
+end
+
+opt Zustandswechsel
+  alt Timer komplett
+    LevelMgr -> Spawner: stopSpawning()
+    LevelMgr -> Portal: activate()
+  else Spieler tot
+    Panel -> LevelMgr: setGameState(GAME_OVER)
+  else Boss besiegt
+    Panel -> LevelMgr: setGameState(VICTORY)
+  else Am Portal + E
+    Panel -> LevelMgr: setGameState(LEVEL_COMPLETE)
+  end
+end
 
 @enduml
